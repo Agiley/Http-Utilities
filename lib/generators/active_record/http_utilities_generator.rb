@@ -3,10 +3,10 @@ require 'generators/http_utilities/orm_helpers'
 
 module ActiveRecord
   module Generators
-    class HttpUtilitiesGenerator < Rails::Generators::Base
-      source_root File.expand_path("../templates", __FILE__)
+    class HttpUtilitiesGenerator < ActiveRecord::Generators::Base
       
       include HttpUtilities::Generators::OrmHelpers
+      source_root File.expand_path("../templates", __FILE__)
       
       def copy_proxy_migration
         migration_template "migration.rb", "db/migrate/create_proxies"
