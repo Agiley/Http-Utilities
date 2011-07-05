@@ -1,10 +1,10 @@
 module HttpUtilities
   module Generators
     class HttpUtilitiesGenerator < Rails::Generators::Base
-      namespace "http_utilities"
+      #namespace "http_utilities"
       source_root File.expand_path("../../templates", __FILE__)
       
-      class_option :orm
+      #class_option :orm
       hook_for :orm
       
       desc "Creates a HttpUtilities-initializer."
