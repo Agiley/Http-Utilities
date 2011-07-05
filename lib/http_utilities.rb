@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 module HttpUtilities
-  require File.join(File.dirname(__FILE__), 'search_utilities/railtie') if defined?(Rails)
+  require File.join(File.dirname(__FILE__), 'http_utilities/railtie') if defined?(Rails)
   
   require File.join(File.dirname(__FILE__), 'http_utilities/http/net_http')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/open_uri')
