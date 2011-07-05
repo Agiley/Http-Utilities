@@ -1,13 +1,13 @@
 require File.expand_path('../../spec_helper', __FILE__)
 
 describe Proxy do
-  
-  before(:each) do
-    clean_database!
-    @proxy = Proxy.new
-  end
 
   describe "when initialized" do
+    before(:each) do
+      clean_database!
+      @proxy = Proxy.new
+    end
+    
     it "should respond to proxy address module instance method" do
       @proxy.should respond_to(:proxy_address)
     end
