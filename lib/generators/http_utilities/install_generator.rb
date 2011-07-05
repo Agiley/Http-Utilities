@@ -3,6 +3,7 @@ module HttpUtilities
     class InstallGenerator < Rails::Generators::Base
       source_root File.expand_path("../../templates", __FILE__)
       class_option :orm
+      hook_for :orm
       
       desc "Copies an initializer, a .yml-file containing user-agents as well as a proxy model."
       
