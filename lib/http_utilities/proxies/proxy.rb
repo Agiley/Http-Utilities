@@ -13,8 +13,6 @@ module HttpUtilities
       end
 
       module ClassMethods
-
-
         def get_random_proxy(protocol = :all, type = :all)
           proxy           =   nil
           protocol_where  =   (!protocol.eql?(:all)) ? " AND protocol = '#{protocol.to_s}'" : ""
