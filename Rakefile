@@ -13,9 +13,6 @@ begin
     if (!defined?(JRUBY_VERSION))
       gemspec.add_dependency 'curb'
     end
-    
-    gemspec.add_development_dependency 'jeweler'
-    gemspec.add_development_dependency 'rspec'
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
