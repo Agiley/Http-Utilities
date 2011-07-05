@@ -1,4 +1,4 @@
-module Devise
+module HttpUtilities
   module Generators
     module OrmHelpers
       
