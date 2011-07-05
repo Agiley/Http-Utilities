@@ -9,6 +9,11 @@ begin
     gemspec.authors = ["Sebastian Johnsson"]
     gemspec.add_dependency 'rails'
     gemspec.add_dependency 'nokogiri'
+    
+    if (!defined?(JRUBY_VERSION))
+      gemspec.add_dependency 'curb'
+    end
+    
     gemspec.add_development_dependency 'jeweler'
     gemspec.add_development_dependency 'rspec'
   end
@@ -17,5 +22,5 @@ rescue LoadError
   puts "Jeweler not available. Install it with: sudo gem install jeweler -s http://gemcutter.org"
 end
 
-require 'bundler'
-Bundler::GemHelper.install_tasks
+#require 'bundler'
+#Bundler::GemHelper.install_tasks
