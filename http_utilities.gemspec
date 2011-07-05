@@ -25,7 +25,6 @@ Gem::Specification.new do |s|
     "lib/generators/active_record/templates/migration.rb",
     "lib/generators/active_record/templates/proxy.rb",
     "lib/generators/http_utilities/http_utilities_generator.rb",
-    "lib/generators/http_utilities/install_generator.rb",
     "lib/generators/http_utilities/orm_helpers.rb",
     "lib/generators/templates/http_utilities.rb",
     "lib/generators/templates/resque_schedule.yml",
