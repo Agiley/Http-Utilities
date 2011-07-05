@@ -8,6 +8,7 @@ begin
     gemspec.homepage = "http://github.com/Agiley/http_utilities"
     gemspec.authors = ["Sebastian Johnsson"]
     gemspec.add_dependency 'rails'
+    gemspec.add_dependency 'nokogiri'
     gemspec.add_development_dependency 'jeweler'
     gemspec.add_development_dependency 'rspec'
   end
