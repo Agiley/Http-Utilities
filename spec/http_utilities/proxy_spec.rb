@@ -11,6 +11,14 @@ describe Proxy do
     it "should respond to proxy address module instance method" do
       @proxy.should respond_to(:proxy_address)
     end
+    
+    it "should correctly return a formatted proxy address" do
+      @proxy.host = "127.0.0.1"
+      @proxy.port = 80
+      
+      @proxy.proxy_address.should == "127.0.0.1:80"
+      @proxy.proxy_address(include_http = true).should == "http://127.0.0.1:80"
+    end
   end
   
   describe "in a class context" do
