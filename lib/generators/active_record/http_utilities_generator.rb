@@ -3,7 +3,7 @@ require 'generators/http_utilities/orm_helpers'
 
 module ActiveRecord
   module Generators
-    class HttpUtilitiesGenerator < ActiveRecord::Generators::Base
+    class HttpUtilitiesGenerator < Rails::Generators::Base
       source_root File.expand_path("../templates", __FILE__)
       
       include HttpUtilities::Generators::OrmHelpers
