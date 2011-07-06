@@ -34,7 +34,7 @@ module HttpUtilities
           connection.rewind
           ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
           response = ic.iconv(connection.readlines.join("\n") + ' ')[0..-2] rescue nil
-          response = response.force_encoding('UTF-8') if (response)
+          response = response.force_encoding('utf-8') rescue nil
         end
 
         return response

@@ -64,21 +64,15 @@ module HttpUtilities
       
       def retrieve_curl_content(url, options = {})
         curl = self.set_curl_options(url, options)
-        force_encoding = options[:force_encoding] || false
 
         begin
           success = curl.perform
           response = curl.body_str
 
-          if (response)
-            if (force_encoding)            
-              response.force_encoding("ASCII-8BIT")   # if not already
-              response.gsub!(/[^\x20-\x7e]/,'') # To prevent the 'from ASCII-8BIT to UTF-8' exceptions
-              response = response.encode("UTF-8")
-              response.force_encoding("UTF-8")
-            else
-              response.force_encoding("UTF-8")
-            end
+          if (response && response.present?)
+            ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
+            response = ic.iconv(response + ' ')[0..-2] rescue nil
+            response = response.force_encoding('utf-8') rescue nil
           end
 
         rescue Exception => e
