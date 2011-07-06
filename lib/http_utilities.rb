@@ -13,6 +13,9 @@ module HttpUtilities
   require File.join(File.dirname(__FILE__), 'http_utilities/http/open_uri')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/curb')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/proxy')
+  require File.join(File.dirname(__FILE__), 'http_utilities/http/cookies')
+  require File.join(File.dirname(__FILE__), 'http_utilities/http/get')
+  require File.join(File.dirname(__FILE__), 'http_utilities/http/post')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/client')
   
   require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_checker')
