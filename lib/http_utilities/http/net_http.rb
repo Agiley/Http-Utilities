@@ -10,19 +10,23 @@ module HttpUtilities
         uri = URI.parse(url) rescue nil
         http = set_net_http_options(uri, options)
         response = nil
+        
+        opts = options.clone()
+        content_type = opts.delete(:content_type) { |e| nil }
 
         if (http && data)
+          data = (data.is_a?(Hash)) ? generate_request_params(data) : data
 
           http.start do |http|
-            post_response = http.request_post(uri.request_uri, data, {"User-Agent" => randomize_user_agent_string})
-
-            if (post_response)
-              response = ""
-
-              post_response.read_body do |body|
-                response << body
-              end
-
+            headers = {}
+            headers["User-Agent"] = randomize_user_agent_string
+            headers["Content-Type"] = content_type if (content_type && content_type.present?)
+            
+            http.post(uri.request_uri, data, headers) do |response_data|
+              response = response_data
+            end
+            
+            if (response && response.present?)
               ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
               response = ic.iconv(response + ' ')[0..-2] rescue nil
               response = response.force_encoding('utf-8') rescue nil

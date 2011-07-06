@@ -27,23 +27,21 @@ module HttpUtilities
       def as_xml(response)
         return (response && response.present?) ? Nokogiri::XML(response, nil, "utf-8") : nil
       end
+      
+      def as_json(response)
+        return (response && response.present?) ? response.to_json : nil
+      end
 
       def retrieve_parsed_html_and_fallback_to_proxies(url, options = {})
-        retries = 0
-        max_retries = options.delete(:maximum_retrieval_retries) { |e| 5 }
-
-        response = retrieve_content_from_url(url, options.merge!({:force_encoding => true}))
-
-        while (!response && retries < max_retries) do
-          options.merge!({:use_proxy => true})
-          puts "Falling back to using proxies..."
-          response = retrieve_content_from_url(url, options)
-          retries += 1
-        end
-
-        parsed_html = (response && response.present?) ? Nokogiri::HTML(response, nil, "utf-8") : nil
-
-        return parsed_html
+        response = retrieve_raw_content_and_fallback_to_proxies(url, options)
+        response = as_html(response) if (response)
+        return response
+      end
+      
+      def retrieve_parsed_xml_and_fallback_to_proxies(url, options = {})
+        response = retrieve_raw_content_and_fallback_to_proxies(url, options)
+        response = as_xml(response) if (response)
+        return response
       end
 
       def retrieve_raw_content_and_fallback_to_proxies(url, options = {})

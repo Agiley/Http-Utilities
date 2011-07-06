@@ -2,6 +2,7 @@
 require 'open-uri'
 require 'net/http'
 require 'uri'
+require 'cgi'
 
 module HttpUtilities
   module Http
@@ -52,6 +53,21 @@ module HttpUtilities
         request = "#{url}?#{query}"
         puts "Sending request: #{request}\n"
         return request
+      end
+      
+      def generate_request_params(params)
+        sorted_params = params.sort
+        query_parts = []
+
+        sorted_params.each do |param_row|
+          param = param_row.first
+          value = param_row.last
+          query_parts << "#{param}=#{value}"
+        end
+
+        query = query_parts.join("&")
+        
+        return query
       end
 
       def encode_param(param)

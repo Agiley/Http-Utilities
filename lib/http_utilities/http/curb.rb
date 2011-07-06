@@ -4,7 +4,7 @@ module HttpUtilities
   module Http
     module Curb
       
-      def post_and_retrieve_content_using_curl
+      def post_and_retrieve_content_using_curl(url, data, options = {})
         curl = set_curl_options(url, options)
         response = nil
 
