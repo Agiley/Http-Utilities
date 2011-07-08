@@ -61,12 +61,6 @@ module HttpUtilities
             end
           end
         end
-
-        if (self.using_proxy?)
-          puts "\nUsing proxy #{self.proxy[:host]}:#{self.proxy[:port]}\n"
-        else
-          #puts "\nNOT USING PROXY!\n"
-        end
       end
 
       def using_proxy?

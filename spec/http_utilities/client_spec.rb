@@ -76,6 +76,19 @@ describe HttpUtilities::Http::Client do
       end
     end
     
+    describe "when retrieving content using a proxy" do
+      it "should have the proxy instance variable properly set" do
+        options = {:method => :net_http, :proxy => "127.0.0.1:80"}
+        params = {:url => "http://www.google.com", :q => "ruby on rails", :start => 0}
+
+        @client.retrieve_parsed_html(@client.generate_request_url(params), options)
+        
+        @client.proxy.should_not be_nil
+        @client.proxy[:host].should == '127.0.0.1'
+        @client.proxy[:port].should == 80
+      end
+    end
+    
     describe "when posting content" do
       before(:each) do
         @trackback_url    =   "http://techcrunch.com/wp-trackback.php?p=314942"
@@ -102,7 +115,6 @@ describe HttpUtilities::Http::Client do
         response = @client.post_and_retrieve_parsed_xml(@trackback_url, @post_data, options)
         response.should be_a(Nokogiri::XML::Document)
       end
-
     end
     
   end
