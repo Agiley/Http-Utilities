@@ -39,7 +39,7 @@ module HttpUtilities
             values << value_arr
           end
 
-          Proxy.import(columns, values, :on_duplicate_key_update => [:proxy_type], :validate => false)
+          ::Proxy.import(columns, values, :on_duplicate_key_update => [:proxy_type], :validate => false)
         end while (proxy_list && proxy_list.any?)
       end
 

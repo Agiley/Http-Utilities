@@ -12,5 +12,13 @@ describe HttpUtilities::Proxies::ProxySeeder do
       proxy_data.should_not be_nil
     end
     
+    #Can only be tested on mysql, sqlite will fail with ConstraintExceptions (since it does not support on duplicate key update ...)
+    if (ENV['DB'] == 'mysql')
+      it "should import parsed proxies using activerecord-import" do
+        @seeder.seed
+        ::Proxy.count.should > 0
+      end
+    end
+    
   end
 end

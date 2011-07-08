@@ -36,7 +36,7 @@ if File.exists?(database_yml)
     load(File.dirname(__FILE__) + '/models.rb')
   end
 else
-  raise "Please create #{database_yml} first to configure your database. Take a look at: #{database_yml}.sample"
+  raise "Please create #{database_yml} first to configure your database. Take a look at: #{database_yml}.example"
 end
 
 def clean_database!
