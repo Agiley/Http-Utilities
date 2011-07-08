@@ -52,7 +52,6 @@ module HttpUtilities
 
         query = query_parts.join("&")
         request = "#{url}?#{query}"
-        puts "Sending request: #{request}\n"
         return request
       end
       

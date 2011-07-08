@@ -7,4 +7,4 @@ mysql:
   encoding: utf8
   database: http_utilities_test
   username: 
-  password: 
+  password:
