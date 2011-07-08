@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{http_utilities}
-  s.version = "0.0.1"
+  s.version = "0.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sebastian Johnsson"]
@@ -29,6 +29,11 @@ Gem::Specification.new do |s|
     "lib/generators/http_utilities/orm_helpers.rb",
     "lib/generators/templates/http_utilities.rb",
     "lib/generators/templates/resque_schedule.yml",
+    "lib/generators/templates/seed_data/proxies/http/public/L1/2011_04_11.txt",
+    "lib/generators/templates/seed_data/proxies/http/public/L2/2011_04_11.txt",
+    "lib/generators/templates/seed_data/proxies/http/public/L3/2010_08_18_1.txt",
+    "lib/generators/templates/seed_data/proxies/http/public/unspecified/2011_04_11.txt",
+    "lib/generators/templates/seed_data/proxies/socks5/public/2011_04_11.txt",
     "lib/generators/templates/user_agents.yml",
     "lib/http_utilities.rb",
     "lib/http_utilities/http/client.rb",
@@ -44,10 +49,13 @@ Gem::Specification.new do |s|
     "lib/http_utilities/jobs/proxies/check_proxy_job.rb",
     "lib/http_utilities/proxies/proxy.rb",
     "lib/http_utilities/proxies/proxy_checker.rb",
+    "lib/http_utilities/proxies/proxy_seeder.rb",
     "lib/http_utilities/railtie.rb",
     "lib/tasks/http_utilities_tasks.rake",
     "spec/database.yml",
+    "spec/database.yml.example",
     "spec/http_utilities/client_spec.rb",
+    "spec/http_utilities/proxy_seeder_spec.rb",
     "spec/http_utilities/proxy_spec.rb",
     "spec/models.rb",
     "spec/schema.rb",
