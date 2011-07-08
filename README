@@ -1,1 +1,14 @@
-Wrapper for Interacting with various Http Libraries (Net:HTTP/Open URI/Curl etc.)
+===== Http-Utilities =====
+
+Http-Utilities is a wrapper for common HTTP-libraries (Net::Http, Open Uri, Curb) using a unified API.
+
+I personally use this in quite a few projects and decided to extract it into a separate gem.
+
+Features:
+- Support for Net:Http, Open Uri, Curb
+- Proxy support (adds a proxy model). Enables you to randomly use different proxies on every request.
+- Proxy checker (comes with Resque jobs for scheduling)
+
+There are some specs but the gems need more test/spec coverage.
+
+This is primarily intended for private use, but get back to me if you use it and run into issues.
