@@ -12,6 +12,7 @@ module HttpUtilities
       include HttpUtilities::Http::Curb
       include HttpUtilities::Http::Proxy
       include HttpUtilities::Http::Cookies
+      include HttpUtilities::Http::ResponseFormat
       include HttpUtilities::Http::Get
       include HttpUtilities::Http::Post
       

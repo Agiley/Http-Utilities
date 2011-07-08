@@ -6,7 +6,7 @@ describe HttpUtilities::Http::Client do
     before(:each) do
       @client = HttpUtilities::Http::Client.new
     end
-    
+        
     it "should respond to a net http module method" do
       @client.should respond_to(:post_and_retrieve_content_using_net_http)
     end
@@ -25,6 +25,10 @@ describe HttpUtilities::Http::Client do
     
     it "should respond to a cookies module method" do
       @client.should respond_to(:handle_cookies)
+    end
+    
+    it "should respond to a format module method" do
+      @client.should respond_to(:as_html)
     end
     
     it "should respond to a get module method" do

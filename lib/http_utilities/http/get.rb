@@ -20,18 +20,6 @@ module HttpUtilities
         return as_html(retrieve_content_from_url(url, options.merge!({:force_encoding => true})))
       end
 
-      def as_html(response)
-        return (response && response.present?) ? Nokogiri::HTML(response, nil, "utf-8") : nil
-      end
-
-      def as_xml(response)
-        return (response && response.present?) ? Nokogiri::XML(response, nil, "utf-8") : nil
-      end
-      
-      def as_json(response)
-        return (response && response.present?) ? response.to_json : nil
-      end
-
       def retrieve_parsed_html_and_fallback_to_proxies(url, options = {})
         response = retrieve_raw_content_and_fallback_to_proxies(url, options)
         response = as_html(response) if (response)

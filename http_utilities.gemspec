@@ -9,13 +9,14 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sebastian Johnsson"]
-  s.date = %q{2011-07-05}
+  s.date = %q{2011-07-08}
   s.description = %q{Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)}
   s.email = %q{sebastian@agiley.se}
   s.extra_rdoc_files = [
     "README"
   ]
   s.files = [
+    ".rspec",
     "Gemfile",
     "README",
     "Rakefile",
@@ -31,15 +32,24 @@ Gem::Specification.new do |s|
     "lib/generators/templates/user_agents.yml",
     "lib/http_utilities.rb",
     "lib/http_utilities/http/client.rb",
+    "lib/http_utilities/http/cookies.rb",
     "lib/http_utilities/http/curb.rb",
+    "lib/http_utilities/http/get.rb",
     "lib/http_utilities/http/net_http.rb",
     "lib/http_utilities/http/open_uri.rb",
+    "lib/http_utilities/http/post.rb",
     "lib/http_utilities/http/proxy.rb",
     "lib/http_utilities/jobs/proxies/check_proxies_job.rb",
     "lib/http_utilities/jobs/proxies/check_proxy_job.rb",
+    "lib/http_utilities/proxies/proxy.rb",
     "lib/http_utilities/proxies/proxy_checker.rb",
     "lib/http_utilities/railtie.rb",
     "lib/tasks/http_utilities_tasks.rake",
+    "spec/database.yml",
+    "spec/http_utilities/client_spec.rb",
+    "spec/http_utilities/proxy_spec.rb",
+    "spec/models.rb",
+    "spec/schema.rb",
     "spec/spec_helper.rb"
   ]
   s.homepage = %q{http://github.com/Agiley/http_utilities}
@@ -53,25 +63,31 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rails>, [">= 0"])
       s.add_runtime_dependency(%q<nokogiri>, [">= 0"])
+      s.add_runtime_dependency(%q<activerecord-import>, [">= 0"])
       s.add_runtime_dependency(%q<curb>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
-      s.add_development_dependency(%q<rspec-rails>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
+      s.add_development_dependency(%q<rcov>, [">= 0"])
+      s.add_development_dependency(%q<sqlite3>, [">= 0"])
     else
       s.add_dependency(%q<rails>, [">= 0"])
       s.add_dependency(%q<nokogiri>, [">= 0"])
+      s.add_dependency(%q<activerecord-import>, [">= 0"])
       s.add_dependency(%q<curb>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
-      s.add_dependency(%q<rspec-rails>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
+      s.add_dependency(%q<rcov>, [">= 0"])
+      s.add_dependency(%q<sqlite3>, [">= 0"])
     end
   else
     s.add_dependency(%q<rails>, [">= 0"])
     s.add_dependency(%q<nokogiri>, [">= 0"])
+    s.add_dependency(%q<activerecord-import>, [">= 0"])
     s.add_dependency(%q<curb>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
-    s.add_dependency(%q<rspec-rails>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
+    s.add_dependency(%q<rcov>, [">= 0"])
+    s.add_dependency(%q<sqlite3>, [">= 0"])
   end
 end
 
