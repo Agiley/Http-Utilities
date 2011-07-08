@@ -9,7 +9,7 @@ ActiveRecord::Schema.define :version => 0 do
     t.string :password
     
     t.string :protocol, :null => false, :default => 'http'
-    t.boolean :proxy_type, :null => false, :defaut => 'public'
+    t.string :proxy_type, :null => false, :defaut => 'public'
     t.string :category
     
     t.datetime :last_checked_at

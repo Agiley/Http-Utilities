@@ -4,34 +4,38 @@ module HttpUtilities
   module Proxies
     class ProxyChecker
       attr_accessor :http_utility, :processed_proxies
-
-      LIMIT = 1000
-      MINIMUM_SUCCESSFUL_ATTEMPTS = 1
-      MAXIMUM_FAILED_ATTEMPTS = 2
+      attr_accessor :limit, :minimum_successful_attempts, :maximum_failed_attempts
 
       def initialize
         self.http_utility = Http::HttpUtility.new
         self.processed_proxies = []
+        
+        self.limit = 1000
+        self.minimum_successful_attempts = 1
+        self.maximum_failed_attempts = 2
       end
 
-      def check_and_update_proxies(public_proxies = true)
-        check_proxies(public_proxies)
+      def check_and_update_proxies(protocol = :all, proxy_type = :all, method = :jobs)
+        check_proxies(protocol, proxy_type, method)
         update_proxies
       end
 
-      def check_proxies(proxy_type = :public)
-        is_public = proxy_type.eql?(:public)
-        proxies = Proxy.should_be_checked(is_public, Time.now, LIMIT)
+      def check_proxies(protocol = :all, proxy_type = :all, method = :jobs)
+        proxies = Proxy.should_be_checked(protocol, proxy_type, Time.now, self.limit)
 
         if (proxies && proxies.any?)
-          puts "Found #{proxies.size} #{proxy_type} proxies to check."
+          Rails.logger.info "Found #{proxies.size} #{proxy_type} proxies to check."
 
           proxies.each do |proxy|
-            Resque.enqueue(::Proxies::CheckProxyJob, proxy.id)
+            if (method.eql?(:jobs))
+              Resque.enqueue(HttpUtilities::Jobs::Proxies::CheckProxyJob, proxy.id)
+            elsif (method.eql?(:inline))
+              check_proxy(proxy)
+            end
           end
 
         else
-          puts "Couldn't find any proxies to check!"
+          Rails.logger.info "Couldn't find any proxies to check!"
         end
       end
 
@@ -48,7 +52,7 @@ module HttpUtilities
                    :disable_auth        =>  true
                   }
 
-        puts "\n\n#{Time.now}: Fetching Proxy #{proxy.proxy_address}."
+        Rails.logger.info "#{Time.now}: Fetching Proxy #{proxy.proxy_address}."
 
         parsed_html = self.http_utility.retrieve_parsed_html("http://www.google.com/webhp?hl=en", options)
 
@@ -59,18 +63,18 @@ module HttpUtilities
             begin
               title = title.content.encode("UTF-8")
               valid_proxy = (title && title.present? && title.strip.downcase.eql?("google"))
-              puts "\n\n Title is: #{title}. Proxy #{proxy.proxy_address}\n\n "
+              Rails.logger.info "Title is: #{title}. Proxy #{proxy.proxy_address} "
             rescue Exception => e
-              puts "Exception occured while trying to validate proxy. Error Class: #{e.class}. Error Message: #{e.message}"
+              Rails.logger.error "Exception occured while trying to validate proxy. Error Class: #{e.class}. Error Message: #{e.message}"
               valid_proxy = false
             end
           end
         end
 
         if (valid_proxy)
-          puts "\n\n#{Time.now}: Proxy #{proxy.proxy_address} is working!"
+          Rails.logger.info "#{Time.now}: Proxy #{proxy.proxy_address} is working!"
         else
-          puts "\n\n#{Time.now}: Proxy #{proxy.proxy_address} is not working!"
+          Rails.logger.info "#{Time.now}: Proxy #{proxy.proxy_address} is not working!"
         end
 
         self.processed_proxies << {:proxy => proxy, :valid => valid_proxy}
@@ -80,7 +84,7 @@ module HttpUtilities
         columns = [:host, :port, :last_checked_at, :valid_proxy, :successful_attempts, :failed_attempts]
         values = []
 
-        puts "Updating/Importing #{self.processed_proxies.size} proxies"
+        Rails.logger.info "Updating/Importing #{self.processed_proxies.size} proxies"
 
         if (self.processed_proxies && self.processed_proxies.any?)
           self.processed_proxies.each do |value|
@@ -95,7 +99,7 @@ module HttpUtilities
               failed_attempts += 1
             end
 
-            is_valid = (successful_attempts >= MINIMUM_SUCCESSFUL_ATTEMPTS && failed_attempts < MAXIMUM_FAILED_ATTEMPTS)
+            is_valid = (successful_attempts >= self.minimum_successful_attempts && failed_attempts < self.maximum_failed_attempts)
             value_arr = [proxy.host, proxy.port, Time.now, is_valid, successful_attempts, failed_attempts]
             values << value_arr
           end

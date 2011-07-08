@@ -2,6 +2,7 @@ source "http://rubygems.org"
 
 gem 'rails'
 gem 'nokogiri'
+gem 'activerecord-import', :git => 'git://github.com/Agiley/activerecord-import.git'
 
 platforms :ruby do
   gem 'curb'

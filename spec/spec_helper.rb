@@ -16,6 +16,7 @@ rescue Bundler::GemNotFound
     "Did you run \`bundlee install\`?"
 end
 
+require "active_record"
 Bundler.require
 
 require File.expand_path('../../lib/http_utilities', __FILE__)
@@ -24,7 +25,6 @@ ENV['DB'] ||= 'sqlite3'
 
 database_yml = File.expand_path('../database.yml', __FILE__)
 if File.exists?(database_yml)
-  require "active_record"
   active_record_configuration = YAML.load_file(database_yml)[ENV['DB']]
   
   ActiveRecord::Base.establish_connection(active_record_configuration)

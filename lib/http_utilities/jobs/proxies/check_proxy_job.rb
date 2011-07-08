@@ -8,7 +8,7 @@ module HttpUtilities
           proxy_object = ::Proxy.find(proxy_id) rescue nil
 
           if (proxy_object)
-            checker = Proxies::ProxyChecker.new
+            checker = HttpUtilities::Proxies::ProxyChecker.new
             checker.check_proxy(proxy_object)
             checker.update_proxies
           end

@@ -3,16 +3,24 @@ module HttpUtilities
     module Proxy
       
       def self.included(base)
-        
-        base.scope :should_be_checked, lambda { |public_proxies, date, limit| 
-          where("public = ? AND (last_checked_at IS NULL OR last_checked_at < ?) AND failed_attempts <= ? AND protocol = ?", public_proxies, date, 10, "http").order("valid_proxy ASC, failed_attempts ASC, last_checked_at ASC").limit(limit) 
-        }
-        
         base.send :extend, ClassMethods
         base.send :include, InstanceMethods
       end
 
       module ClassMethods
+        def should_be_checked(protocol = :all, proxy_type = :all, date = Time.now, limit = 10)
+          conditions = []
+          conditions << "protocol = '#{protocol.to_s}'" if (protocol && !protocol.downcase.to_sym.eql?(:all))
+          conditions << "proxy_type = '#{proxy_type.to_s}'" if (proxy_type && !proxy_type.downcase.to_sym.eql?(:all))
+          conditions << "(last_checked_at IS NULL OR last_checked_at < '#{date.to_s(:db)}')"
+          conditions << "failed_attempts <= 10"
+          query = conditions.join(" AND ")
+          
+          puts "QUERY: #{query.inspect}"
+          
+          where(query).order("valid_proxy ASC, failed_attempts ASC, last_checked_at ASC").limit(limit) 
+        end
+        
         def get_random_proxy(protocol = :all, type = :all)
           proxy           =   nil
           protocol_where  =   (!protocol.eql?(:all)) ? " AND protocol = '#{protocol.to_s}'" : ""
