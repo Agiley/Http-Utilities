@@ -8,7 +8,8 @@ Features:
 - Support for Net:Http, Open Uri, Curb
 - Proxy support (adds a proxy model). Enables you to randomly use different proxies on every request.
 - Proxy checker (comes with Resque jobs for scheduling)
+- Yaml-file containing a few thousand User Agents that are randomly used on every request.
 
-There are some specs but the gems need more test/spec coverage.
+There are some specs but the gem needs more test/spec coverage. Working on it though.
 
 This is primarily intended for private use, but get back to me if you use it and run into issues.
