@@ -39,6 +39,7 @@ Gem::Specification.new do |s|
     "lib/http_utilities/http/open_uri.rb",
     "lib/http_utilities/http/post.rb",
     "lib/http_utilities/http/proxy.rb",
+    "lib/http_utilities/http/response_format.rb",
     "lib/http_utilities/jobs/proxies/check_proxies_job.rb",
     "lib/http_utilities/jobs/proxies/check_proxy_job.rb",
     "lib/http_utilities/proxies/proxy.rb",
