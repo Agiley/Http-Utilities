@@ -19,6 +19,13 @@ describe Proxy do
       @proxy.proxy_address.should == "127.0.0.1:80"
       @proxy.proxy_address(include_http = true).should == "http://127.0.0.1:80"
     end
+    
+    it "should correctly return formatted proxy credentials" do
+      @proxy.username = "usr"
+      @proxy.password = "passw"
+      
+      @proxy.proxy_credentials.should == "usr:passw"
+    end
   end
   
   describe "in a class context" do
@@ -42,7 +49,15 @@ describe Proxy do
   describe "when fetching proxies" do
     before(:each) do
       clean_database!
-      data = {:host => "127.0.0.1", :port => 80, :protocol => 'http', :proxy_type => 'public', :category => 'L1'}
+      
+      data = {:host => "127.0.0.1", 
+              :port => 80, 
+              :protocol => 'http', 
+              :proxy_type => 'public', 
+              :category => 'L1', 
+              :valid_proxy => true,
+              :last_checked_at => 1.week.ago
+             }
       
       #Http Proxies
       Proxy.create(data)
@@ -73,6 +88,23 @@ describe Proxy do
           proxies = Proxy.should_be_checked(protocol, proxy_type)
           proxies.should_not be_nil
           proxies.size.should == 1
+        end
+      end
+    end
+    
+    [:http, :socks].each do |protocol|
+      it "should return a random #{protocol.to_s} proxy" do
+        random_proxy = Proxy.get_random_proxy(protocol)
+        random_proxy.should_not be_nil
+        random_proxy.protocol.should == protocol.to_s
+      end
+      
+      [:public, :shared, :private].each do |proxy_type|
+        it "should return a random #{proxy_type.to_s} #{protocol.to_s} proxy" do
+          random_proxy = Proxy.get_random_proxy(protocol, proxy_type)
+          random_proxy.should_not be_nil
+          random_proxy.protocol.should == protocol.to_s
+          random_proxy.proxy_type.should == proxy_type.to_s
         end
       end
     end

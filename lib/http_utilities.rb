@@ -4,6 +4,9 @@ module HttpUtilities
   
   mattr_accessor :default_http_library
   @@default_http_library = :net_http
+  
+  mattr_accessor :check_proxies_using_resque
+  @@default_http_library = true
 
   def self.setup
     yield self

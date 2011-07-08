@@ -9,28 +9,41 @@ module HttpUtilities
 
       module ClassMethods
         def should_be_checked(protocol = :all, proxy_type = :all, date = Time.now, limit = 10)
-          conditions = []
-          conditions << "protocol = '#{protocol.to_s}'" if (protocol && !protocol.downcase.to_sym.eql?(:all))
-          conditions << "proxy_type = '#{proxy_type.to_s}'" if (proxy_type && !proxy_type.downcase.to_sym.eql?(:all))
-          conditions << "(last_checked_at IS NULL OR last_checked_at < '#{date.to_s(:db)}')"
+          conditions = set_protocol_and_proxy_type_conditions(conditions, protocol, proxy_type)
+          conditions << ActiveRecord::Base.send(:sanitize_sql_array, ["(last_checked_at IS NULL OR last_checked_at < ?)", date])
           conditions << "failed_attempts <= 10"
           query = conditions.join(" AND ")
-          
-          puts "QUERY: #{query.inspect}"
           
           where(query).order("valid_proxy ASC, failed_attempts ASC, last_checked_at ASC").limit(limit) 
         end
         
-        def get_random_proxy(protocol = :all, type = :all)
-          proxy           =   nil
-          protocol_where  =   (!protocol.eql?(:all)) ? " AND protocol = '#{protocol.to_s}'" : ""
-          public_where    =   (!type.eql?(:all)) ? " AND public = #{type.eql?(:public)}" : ""
-
+        def get_random_proxy(protocol = :all, proxy_type = :all)
+          conditions = set_protocol_and_proxy_type_conditions(conditions, protocol, proxy_type)
+          conditions << ActiveRecord::Base.send(:sanitize_sql_array, ["valid_proxy = ?", true])
+          conditions << "last_checked_at IS NOT NULL"
+          query = conditions.join(" AND ")
+          
+          proxy = nil
+          
           uncached do
-            proxy = where("valid_proxy = 1 AND last_checked_at IS NOT NULL#{protocol_where}#{public_where}").order("successful_attempts DESC, failed_attempts ASC, RAND() DESC").limit(1).first rescue nil
+            begin
+              proxy = where(query).order("successful_attempts DESC, failed_attempts ASC, RAND() DESC").limit(1).first
+            rescue ActiveRecord::StatementInvalid
+              #If we're using Sqlite, RAND() won't work
+              proxy = where(query).order("successful_attempts DESC, failed_attempts ASC, RANDOM() DESC").limit(1).first
+            rescue
+              proxy = nil
+            end
           end
 
           return proxy
+        end
+        
+        def set_protocol_and_proxy_type_conditions(conditions, protocol, proxy_type)
+          conditions = []
+          conditions << ActiveRecord::Base.send(:sanitize_sql_array, ["protocol = ?", protocol]) if (protocol && !protocol.downcase.to_sym.eql?(:all))
+          conditions << ActiveRecord::Base.send(:sanitize_sql_array, ["proxy_type = ?", proxy_type]) if (proxy_type && !proxy_type.downcase.to_sym.eql?(:all))
+          return conditions
         end
 
         def format_proxy_address(proxy_host, proxy_port = 80, include_http = false)
@@ -46,9 +59,11 @@ module HttpUtilities
 
       module InstanceMethods
         def proxy_address(include_http = false)
-          proxy_addr = "#{self.host}:#{self.port}"
-          proxy_addr.insert(0, "http://") if (include_http && !proxy_addr.start_with?("http://"))
-          return proxy_addr
+          return ::Proxy.format_proxy_address(self.host, self.port, include_http)
+        end
+        
+        def proxy_credentials
+          return ::Proxy.format_proxy_credentials(self.username, self.password)
         end
       end
       
