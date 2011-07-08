@@ -93,6 +93,17 @@ describe HttpUtilities::Http::Client do
       end
     end
     
+    describe "when persisting cookies" do
+      it "should have the cookie instance variable properly set" do
+        options = {:method => :net_http, :use_cookies => true, :save_cookies => true}
+        params = {:url => "http://www.google.com", :q => "ruby on rails", :start => 0}
+
+        @client.retrieve_parsed_html(@client.generate_request_url(params), options)
+        
+        @client.cookies.should_not be_nil
+      end
+    end
+    
     describe "when posting content" do
       before(:each) do
         @trackback_url    =   "http://techcrunch.com/wp-trackback.php?p=314942"
