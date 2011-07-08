@@ -13,4 +13,8 @@ group :development, :test do
   gem 'rspec'
   gem 'rcov'
   gem 'sqlite3'
+  
+  platforms :ruby do
+    gem 'mysql2'
+  end
 end

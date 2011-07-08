@@ -52,7 +52,6 @@ Gem::Specification.new do |s|
     "lib/http_utilities/proxies/proxy_seeder.rb",
     "lib/http_utilities/railtie.rb",
     "lib/tasks/http_utilities_tasks.rake",
-    "spec/database.yml",
     "spec/database.yml.example",
     "spec/http_utilities/client_spec.rb",
     "spec/http_utilities/proxy_seeder_spec.rb",
@@ -78,6 +77,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
       s.add_development_dependency(%q<sqlite3>, [">= 0"])
+      s.add_development_dependency(%q<mysql2>, [">= 0"])
     else
       s.add_dependency(%q<rails>, [">= 0"])
       s.add_dependency(%q<nokogiri>, [">= 0"])
@@ -87,6 +87,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<rcov>, [">= 0"])
       s.add_dependency(%q<sqlite3>, [">= 0"])
+      s.add_dependency(%q<mysql2>, [">= 0"])
     end
   else
     s.add_dependency(%q<rails>, [">= 0"])
@@ -97,6 +98,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<rcov>, [">= 0"])
     s.add_dependency(%q<sqlite3>, [">= 0"])
+    s.add_dependency(%q<mysql2>, [">= 0"])
   end
 end
 
