@@ -4,8 +4,8 @@ module HttpUtilities
       class CheckProxiesJob
         @queue = :proxies
 
-        def self.perform(proxy_id)
-          HttpUtilities::Proxies::ProxyChecker.new.check_proxies
+        def self.perform(protocol = :all, proxy_type = :all)
+          HttpUtilities::Proxies::ProxyChecker.new.check_proxies(protocol, proxy_type)
         end
       end
     end
