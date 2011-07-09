@@ -1,6 +1,7 @@
 module HttpUtilities
   module Proxies
     class ProxySeeder
+      require 'activerecord-import'
       attr_accessor :protocols, :proxy_types, :categories
 
       def initialize

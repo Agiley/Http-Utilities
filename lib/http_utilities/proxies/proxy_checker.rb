@@ -3,6 +3,7 @@
 module HttpUtilities
   module Proxies
     class ProxyChecker
+      require 'activerecord-import'
       attr_accessor :client, :processed_proxies
       attr_accessor :limit, :minimum_successful_attempts, :maximum_failed_attempts
 
