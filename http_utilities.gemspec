@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sebastian Johnsson"]
-  s.date = %q{2011-07-08}
+  s.date = %q{2011-07-09}
   s.description = %q{Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)}
   s.email = %q{sebastian@agiley.se}
   s.extra_rdoc_files = [
@@ -25,8 +25,9 @@ Gem::Specification.new do |s|
     "lib/generators/active_record/http_utilities_generator.rb",
     "lib/generators/active_record/templates/migration.rb",
     "lib/generators/active_record/templates/proxy.rb",
+    "lib/generators/helpers/file_helper.rb",
+    "lib/generators/helpers/orm_helpers.rb",
     "lib/generators/http_utilities/http_utilities_generator.rb",
-    "lib/generators/http_utilities/orm_helpers.rb",
     "lib/generators/templates/http_utilities.rb",
     "lib/generators/templates/resque_schedule.yml",
     "lib/generators/templates/seed_data/proxies/http/public/L1/2011_04_11.txt",
@@ -77,7 +78,8 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<rcov>, [">= 0"])
       s.add_development_dependency(%q<sqlite3>, [">= 0"])
-      s.add_development_dependency(%q<mysql2>, [">= 0"])
+      s.add_development_dependency(%q<generator_spec>, [">= 0"])
+      s.add_development_dependency(%q<mysql2>, ["= 0.2.7"])
     else
       s.add_dependency(%q<rails>, [">= 0"])
       s.add_dependency(%q<nokogiri>, [">= 0"])
@@ -87,7 +89,8 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<rcov>, [">= 0"])
       s.add_dependency(%q<sqlite3>, [">= 0"])
-      s.add_dependency(%q<mysql2>, [">= 0"])
+      s.add_dependency(%q<generator_spec>, [">= 0"])
+      s.add_dependency(%q<mysql2>, ["= 0.2.7"])
     end
   else
     s.add_dependency(%q<rails>, [">= 0"])
@@ -98,7 +101,8 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<rcov>, [">= 0"])
     s.add_dependency(%q<sqlite3>, [">= 0"])
-    s.add_dependency(%q<mysql2>, [">= 0"])
+    s.add_dependency(%q<generator_spec>, [">= 0"])
+    s.add_dependency(%q<mysql2>, ["= 0.2.7"])
   end
 end
 
