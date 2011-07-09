@@ -51,6 +51,7 @@ module HttpUtilities
 
       def perform_net_http_request(http_or_url, uri = nil, options = {}, redirect_count = 0, max_redirects = 3)
         response = nil
+        retries, max_retries = 0, 3
 
         if (http_or_url)
           if (http_or_url.is_a?(String))
@@ -66,8 +67,10 @@ module HttpUtilities
             use_cookies       =   opts.delete(:use_cookies) { |e| false }
             save_cookies      =   opts.delete(:save_cookies) { |e| true}
             request_cookies   =   opts.delete(:cookies) { |e| nil }
+            timeout           =   opts.delete(:timeout) { |e| 60 }
 
             http.start do |http|
+              http.read_timeout = timeout
               request_uri = uri.request_uri rescue nil
 
               if (request_uri)              
@@ -110,8 +113,9 @@ module HttpUtilities
                 end
               end
             end
-          rescue
-            puts "Exception occurred while trying to connect."
+          rescue Errno::ETIMEDOUT => error
+            retries += 1
+            retry if (retries < max_retries)
           end
         end
 
