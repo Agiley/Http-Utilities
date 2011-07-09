@@ -1,5 +1,5 @@
 require 'rails/generators/active_record'
-require 'generators/http_utilities/orm_helpers'
+require 'generators/helpers/orm_helpers'
 
 module ActiveRecord
   module Generators
