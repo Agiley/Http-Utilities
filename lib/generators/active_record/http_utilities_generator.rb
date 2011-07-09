@@ -9,7 +9,7 @@ module ActiveRecord
       source_root File.expand_path("../templates", __FILE__)
       
       def copy_proxy_migration
-        migration_template "migration.rb", "db/migrate/create_proxies"
+        migration_template "migration.rb", "db/migrate/create_proxies" unless model_exists?('proxy') && behavior == :invoke
       end
       
       def copy_proxy_model
