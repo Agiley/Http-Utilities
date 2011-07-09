@@ -1,6 +1,6 @@
 require "active_record"
-require File.expand_path('../../lib/http_utilities/proxies/proxy', __FILE__)
+require File.expand_path('../../lib/http_utilities/proxies/proxy_module', __FILE__)
 
 class Proxy < ActiveRecord::Base
-  include HttpUtilities::Proxies::Proxy
+  include HttpUtilities::Proxies::ProxyModule
 end

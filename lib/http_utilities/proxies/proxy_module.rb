@@ -1,6 +1,6 @@
 module HttpUtilities
   module Proxies
-    module Proxy
+    module ProxyModule
       
       def self.included(base)
         base.send :extend, ClassMethods
@@ -9,7 +9,7 @@ module HttpUtilities
 
       module ClassMethods
         def should_be_checked(protocol = :all, proxy_type = :all, date = Time.now, limit = 10)
-          conditions = set_protocol_and_proxy_type_conditions(conditions, protocol, proxy_type)
+          conditions = set_protocol_and_proxy_type_conditions(protocol, proxy_type)
           conditions << ActiveRecord::Base.send(:sanitize_sql_array, ["(last_checked_at IS NULL OR last_checked_at < ?)", date])
           conditions << "failed_attempts <= 10"
           query = conditions.join(" AND ")
@@ -18,7 +18,7 @@ module HttpUtilities
         end
         
         def get_random_proxy(protocol = :all, proxy_type = :all)
-          conditions = set_protocol_and_proxy_type_conditions(conditions, protocol, proxy_type)
+          conditions = set_protocol_and_proxy_type_conditions(protocol, proxy_type)
           conditions << ActiveRecord::Base.send(:sanitize_sql_array, ["valid_proxy = ?", true])
           conditions << "last_checked_at IS NOT NULL"
           query = conditions.join(" AND ")
@@ -39,7 +39,7 @@ module HttpUtilities
           return proxy
         end
         
-        def set_protocol_and_proxy_type_conditions(conditions, protocol, proxy_type)
+        def set_protocol_and_proxy_type_conditions(protocol, proxy_type)
           conditions = []
           conditions << ActiveRecord::Base.send(:sanitize_sql_array, ["protocol = ?", protocol]) if (protocol && !protocol.downcase.to_sym.eql?(:all))
           conditions << ActiveRecord::Base.send(:sanitize_sql_array, ["proxy_type = ?", proxy_type]) if (proxy_type && !proxy_type.downcase.to_sym.eql?(:all))
