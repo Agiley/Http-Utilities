@@ -20,6 +20,7 @@ module HttpUtilities
           source_data = []
           File.open(source_file, 'r') {|f| source_data = f.readlines("\n") }
           open(destination_file, 'a') { |dest_file|
+            dest_file.puts
             source_data.each { |line| dest_file.puts line }
           }
         end
