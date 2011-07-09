@@ -51,7 +51,7 @@ module HttpUtilities
         curl.on_success do |data|
           self.add_url_to_multi(multi, url_queue.shift, url_queue, responses, options) if (url_queue.any?)
           if (data.body_str && data.body_str.present?)
-            responses << format.eql?(:xml) ? Nokogiri::XML(data.body_str, nil, "utf-8") : Nokogiri::HTML(data.body_str, nil, "utf-8") 
+            responses << format.eql?(:xml) ? as_xml(data.body_str) : as_html(data.body_str) 
           end
         end
 

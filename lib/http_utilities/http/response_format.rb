@@ -1,6 +1,7 @@
 module HttpUtilities
   module Http
     module ResponseFormat
+      require 'nokogiri'
       
       def as_html(response)
         return (response && response.present?) ? Nokogiri::HTML(response, nil, "utf-8") : nil
