@@ -2,7 +2,7 @@ module HttpUtilities
   module Jobs
     module Proxies
       class CheckProxiesJob
-        @queue = :low
+        @queue = :proxies
 
         def self.perform(proxy_id)
           HttpUtilities::Proxies::ProxyChecker.new.check_proxies

@@ -3,11 +3,11 @@
 module HttpUtilities
   module Proxies
     class ProxyChecker
-      attr_accessor :http_utility, :processed_proxies
+      attr_accessor :client, :processed_proxies
       attr_accessor :limit, :minimum_successful_attempts, :maximum_failed_attempts
 
       def initialize
-        self.http_utility = Http::HttpUtility.new
+        self.client = HttpUtilities::Http::Client.new
         self.processed_proxies = []
         
         self.limit = 1000
@@ -15,12 +15,13 @@ module HttpUtilities
         self.maximum_failed_attempts = 2
       end
 
-      def check_and_update_proxies(protocol = :all, proxy_type = :all, method = :jobs)
+      def check_and_update_proxies(protocol = :all, proxy_type = :all, method = nil)
         check_proxies(protocol, proxy_type, method)
         update_proxies
       end
 
-      def check_proxies(protocol = :all, proxy_type = :all, method = :jobs)
+      def check_proxies(protocol = :all, proxy_type = :all, method = nil)
+        method = processing_method(method)
         proxies = Proxy.should_be_checked(protocol, proxy_type, Time.now, self.limit)
 
         if (proxies && proxies.any?)
@@ -29,7 +30,7 @@ module HttpUtilities
           proxies.each do |proxy|
             if (method.eql?(:jobs))
               Resque.enqueue(HttpUtilities::Jobs::Proxies::CheckProxyJob, proxy.id)
-            elsif (method.eql?(:inline))
+            elsif (method.eql?(:iterate))
               check_proxy(proxy)
             end
           end
@@ -38,7 +39,7 @@ module HttpUtilities
           Rails.logger.info "Couldn't find any proxies to check!"
         end
       end
-
+      
       def check_proxy(proxy, timeout = 60)
         document = nil
         valid_proxy = false
@@ -54,7 +55,7 @@ module HttpUtilities
 
         Rails.logger.info "#{Time.now}: Fetching Proxy #{proxy.proxy_address}."
 
-        parsed_html = self.http_utility.retrieve_parsed_html("http://www.google.com/webhp?hl=en", options)
+        parsed_html = self.client.retrieve_parsed_html("http://www.google.com/webhp?hl=en", options)
 
         if (parsed_html)
           title = parsed_html.css("title").first
@@ -107,6 +108,14 @@ module HttpUtilities
           Proxy.import(columns, values, :on_duplicate_key_update => [:last_checked_at, :valid_proxy, :successful_attempts, :failed_attempts], :validate => false)
         end
 
+      end
+      
+      def processing_method(method = nil)
+        if (method.nil? || method.to_sym.eql?(:jobs))
+          method = (defined?(Resque)) ? :jobs : :iterate
+        end
+        
+        return method
       end
 
     end
