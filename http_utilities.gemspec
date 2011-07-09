@@ -55,6 +55,7 @@ Gem::Specification.new do |s|
     "lib/tasks/http_utilities_tasks.rake",
     "spec/database.yml.example",
     "spec/http_utilities/client_spec.rb",
+    "spec/http_utilities/proxy_checker_spec.rb",
     "spec/http_utilities/proxy_seeder_spec.rb",
     "spec/http_utilities/proxy_spec.rb",
     "spec/models.rb",
