@@ -12,7 +12,7 @@ module HttpUtilities
         end
       end
       
-      def append_to_file(source, destination)
+      def append_to_file(source, destination, prepend_with = "\n")
         source_file = File.join(self.class.source_root, source)
         destination_file = File.join(Rails.root, destination)
         
@@ -20,7 +20,7 @@ module HttpUtilities
           source_data = []
           File.open(source_file, 'r') {|f| source_data = f.readlines("\n") }
           open(destination_file, 'a') { |dest_file|
-            dest_file.puts
+            dest_file << prepend_with if (prepend_with)
             source_data.each { |line| dest_file.puts line }
           }
         end
