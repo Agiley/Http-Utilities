@@ -13,6 +13,7 @@ group :development, :test do
   gem 'rspec'
   gem 'rcov'
   gem 'sqlite3'
+  gem "generator_spec"
   
   platforms :ruby do
     gem 'mysql2', '0.2.7'
