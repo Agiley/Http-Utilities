@@ -4,13 +4,11 @@ module HttpUtilities
 
       private
 
-      def copy_dir(source,options={})
-        root_dir=File.join(options[:root] || Lolita.root,source)
+      def copy_dir(source, destination)
+        root_dir=File.join(source_root, source)
         Dir[File.join(root_dir, "**/*")].each do |file|
           relative = file.gsub(/^#{root_dir}\//, '')
-          if File.file?(file)
-            copy_file file, File.join(Rails.root, source, relative)
-          end
+          copy_file file, File.join(Rails.root, destination, relative) if File.file?(file)
         end
       end
 
