@@ -13,7 +13,7 @@ module ActiveRecord
       end
       
       def copy_proxy_model
-        template "proxy.rb", "app/models/proxy.rb" unless model_exists? && behavior == :invoke
+        template "proxy.rb", "app/models/proxy.rb" unless model_exists?('proxy') && behavior == :invoke
       end
 
     end
