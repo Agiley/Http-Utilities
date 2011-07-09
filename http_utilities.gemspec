@@ -73,7 +73,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rails>, [">= 0"])
       s.add_runtime_dependency(%q<nokogiri>, [">= 0"])
-      s.add_runtime_dependency(%q<activerecord-import>, [">= 0"])
+      s.add_runtime_dependency(%q<activerecord-import>, [">= 0.2.0"])
       s.add_runtime_dependency(%q<curb>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
@@ -84,7 +84,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<rails>, [">= 0"])
       s.add_dependency(%q<nokogiri>, [">= 0"])
-      s.add_dependency(%q<activerecord-import>, [">= 0"])
+      s.add_dependency(%q<activerecord-import>, [">= 0.2.0"])
       s.add_dependency(%q<curb>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
@@ -96,7 +96,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<rails>, [">= 0"])
     s.add_dependency(%q<nokogiri>, [">= 0"])
-    s.add_dependency(%q<activerecord-import>, [">= 0"])
+    s.add_dependency(%q<activerecord-import>, [">= 0.2.0"])
     s.add_dependency(%q<curb>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
