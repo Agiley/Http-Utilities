@@ -24,6 +24,17 @@ module HttpUtilities
         copy_dir "seed_data", "db/seed_data"
       end
       
+      def copy_resque_schedule
+        if (defined?(Resque))
+          if (file_exists?("config/resque_schedule.yml"))
+            puts "It seems like there's already a resque_schedule.yml-file."
+            append_to_file "resque_schedule.yml", "config/resque_schedule.yml"
+          else
+            template "resque_schedule.yml", "config/resque_schedule.yml"
+          end
+        end
+      end
+      
     end
   end
 end
