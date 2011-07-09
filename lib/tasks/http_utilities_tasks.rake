@@ -7,7 +7,7 @@ namespace :http_utilities do
       seeder.seed
     end
 
-    task :check_proxies, :protocol, :proxy_type, :method => :environment do |task, args|
+    task :check_proxies, [:protocol, :proxy_type, :method] => [:environment] do |task, args|
       protocol    =   (args.protocol)     ?   args.protocol.to_sym    : :http
       proxy_type  =   (args.proxy_type)   ?   args.proxy_type.to_sym  : :public
       method      =   (args.method)       ?   args.method.to_sym      : :jobs
