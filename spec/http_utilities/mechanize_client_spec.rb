@@ -45,7 +45,7 @@ describe HttpUtilities::Http::Mechanize::Client do
     
     it "should submit a google search query successfully" do
       response = @client.set_form_and_submit("http://www.google.com/webhp", {:name => "f"}, :first, {:q => {:type => :input, :value => "Ruby on Rails"}})
-      response.parser.at_css("div#resultStats").should_not be_nil
+      response.parser.content.should =~ /result(s)?/i
     end
   end
     
