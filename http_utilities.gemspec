@@ -42,6 +42,7 @@ Gem::Specification.new do |s|
     "lib/http_utilities/http/curb.rb",
     "lib/http_utilities/http/format.rb",
     "lib/http_utilities/http/get.rb",
+    "lib/http_utilities/http/logger.rb",
     "lib/http_utilities/http/mechanize/client.rb",
     "lib/http_utilities/http/net_http.rb",
     "lib/http_utilities/http/open_uri.rb",
