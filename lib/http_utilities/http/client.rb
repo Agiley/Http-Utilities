@@ -18,6 +18,7 @@ module HttpUtilities
       include HttpUtilities::Http::Get
       include HttpUtilities::Http::Post
       include HttpUtilities::Http::Format
+      include HttpUtilities::Http::Logger
       
       attr_accessor :mutex, :user_agents, :proxy, :cookies
       

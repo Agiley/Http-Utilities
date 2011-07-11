@@ -22,6 +22,7 @@ module HttpUtilities
   require File.join(File.dirname(__FILE__), 'http_utilities/http/get')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/post')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/format')
+  require File.join(File.dirname(__FILE__), 'http_utilities/http/logger')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/client')
   
   require File.join(File.dirname(__FILE__), 'http_utilities/http/mechanize/client')

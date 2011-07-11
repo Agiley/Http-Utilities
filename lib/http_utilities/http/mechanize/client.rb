@@ -15,6 +15,7 @@ module HttpUtilities
         include HttpUtilities::Http::UserAgent
         include HttpUtilities::Http::Request
         include HttpUtilities::Http::Format
+        include HttpUtilities::Http::Logger
 
         attr_accessor :agent, :mutex, :user_agents, :proxy, :retries, :max_retries
 
@@ -65,11 +66,11 @@ module HttpUtilities
               button = (submit_identifier.nil? || submit_identifier.eql?(:first)) ? form.buttons.first : form.button_with(submit_identifier)
               response_page = self.agent.submit(form, button) rescue nil
             else
-              Rails.logger.info "[HttpUtilities::Http::Mechanize::Client] - Couldn't find form with identifier #{form_identifier.inspect}"
+              log(:info, "[HttpUtilities::Http::Mechanize::Client] - Couldn't find form with identifier #{form_identifier.inspect}")
             end
 
           elsif ((!page || !page.is_a?(::Mechanize::Page)) && self.retries < self.max_retries)
-            Rails.logger.info "[HttpUtilities::Http::Mechanize::Client] - Couldn't find page or it wasn't a page."
+            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Couldn't find page or it wasn't a page.")
             self.retries += 1
             set_agent
             set_form_and_submit(url_or_page, form_identifier, submit_identifier, fields, client_options)
@@ -89,10 +90,10 @@ module HttpUtilities
             page = self.agent.get(url)
 
           rescue Net::HTTPNotFound, ::Mechanize::ResponseCodeError => error
-            Rails.logger.error "[HttpUtilities::Http::Mechanize::Client] - 404 occurred for url #{url}. Error message: #{error.message}"
+            log(:error, "[HttpUtilities::Http::Mechanize::Client] - 404 occurred for url #{url}. Error message: #{error.message}")
 
           rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT, Errno::ECONNRESET, Timeout::Error, Net::HTTPUnauthorized, Net::HTTPForbidden => connection_error
-            Rails.logger.error "[HttpUtilities::Http::Mechanize::Client] - Error occurred. Error class: #{connection_error.class.name}. Message: #{connection_error.message}"
+            log(:error, "[HttpUtilities::Http::Mechanize::Client] - Error occurred. Error class: #{connection_error.class.name}. Message: #{connection_error.message}")
 
             open_retries += 1
 
@@ -103,7 +104,7 @@ module HttpUtilities
             end
 
           rescue StandardError => error
-            Rails.logger.error "[HttpUtilities::Http::Mechanize::Client] - Error occurred. Error class: #{error.class.name}. Message: #{error.message}"
+            log(:error, "[HttpUtilities::Http::Mechanize::Client] - Error occurred. Error class: #{error.class.name}. Message: #{error.message}")
 
             open_retries += 1
 
@@ -152,16 +153,16 @@ module HttpUtilities
 
         def set_form_field(form, key, value)
           if (value[:type].eql?(:input))
-            #Rails.logger.info "[HttpUtilities::Http::Mechanize::Client] - Setting form field #{key} to value #{value[:value]}."
+            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting form field #{key} to value #{value[:value]}.")
             form.has_field?(key.to_s) ? form.field_with(:name => key.to_s).value = value[:value].to_s : set_form_fields(form, value[:fallbacks])
           elsif (value[:type].eql?(:checkbox))
-            #Rails.logger.info "[HttpUtilities::Http::Mechanize::Client] - Setting #{key} to checked: #{value[:checked]}."
+            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting #{key} to checked: #{value[:checked]}.")
             status = form.checkbox_with(:name => key.to_s).checked = value[:checked]
           elsif (value[:type].eql?(:radiobutton))
-            #Rails.logger.info "[HttpUtilities::Http::Mechanize::Client] - Setting #{key} to checked: #{value[:checked]}."
+            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting #{key} to checked: #{value[:checked]}.")
             status = form.radiobutton_with(:name => key.to_s).checked = value[:checked]
           elsif (value[:type].eql?(:file_upload))
-            #Rails.logger.info "[HttpUtilities::Http::Mechanize::Client] - Setting file upload #{key} to value #{value[:value]}."
+            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting file upload #{key} to value #{value[:value]}.")
             status = form.file_upload_with(:name => key.to_s).file_name = value[:value].to_s
           end
 

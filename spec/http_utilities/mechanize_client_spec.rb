@@ -47,6 +47,15 @@ describe HttpUtilities::Http::Mechanize::Client do
       response = @client.set_form_and_submit("http://www.google.com/webhp", {:name => "f"}, :first, {:q => {:type => :input, :value => "Ruby on Rails"}})
       response.parser.content.should =~ /result(s)?/i
     end
+    
+    it "should submit a google search query using proxy successfully" do
+      response = @client.set_form_and_submit("http://www.google.com/webhp", {:name => "f"}, :first, {:q => {:type => :input, :value => "Ruby on Rails"}}, {:use_proxy => true, :proxy => "127.0.0.1:80"})
+      @client.proxy[:host].should == "127.0.0.1"
+      @client.proxy[:port].should == 80
+      
+      #Using 127.0.0.1:80 as a proxy will raise errors and thus return an empty response...
+      response.should be_nil
+    end
   end
     
 end

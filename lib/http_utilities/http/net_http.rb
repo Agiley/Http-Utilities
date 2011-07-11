@@ -92,11 +92,16 @@ module HttpUtilities
                 response = http.request(request) rescue nil
 
                 if (response)
-                  if (!(response.code =~ /^30\d{1}/i).nil? && response['location'] && response['location'].present?)
+                  location = response['location']
+                  
+                  if (!(response.code =~ /^30\d{1}/i).nil? && location && location.present? && !location.eql?("/"))
                     redirect_count += 1
                     handle_cookies(use_cookies, save_cookies, response)
-                    puts "\nRedirecting to location: #{response['location']}\n"
-                    response = perform_net_http_request(response['location'], uri, options, redirect_count, max_redirects) if (redirect_count < max_redirects)
+                    
+                    if (redirect_count < max_redirects)
+                      puts "\nRedirecting to location: #{response['location']}\n"
+                      response = perform_net_http_request(location, uri, options, redirect_count, max_redirects)
+                    end
                   end
 
                   handle_cookies(use_cookies, save_cookies, response)
