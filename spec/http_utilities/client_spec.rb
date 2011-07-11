@@ -27,8 +27,12 @@ describe HttpUtilities::Http::Client do
       @client.should respond_to(:handle_cookies)
     end
     
-    it "should respond to a format module method" do
-      @client.should respond_to(:as_html)
+    it "should respond to a user agent module method" do
+      @client.should respond_to(:set_user_agents)
+    end
+    
+    it "should respond to a request module method" do
+      @client.should respond_to(:generate_request_url)
     end
     
     it "should respond to a get module method" do
@@ -37,6 +41,10 @@ describe HttpUtilities::Http::Client do
     
     it "should respond to a post module method" do
       @client.should respond_to(:post_and_retrieve_content)
+    end
+    
+    it "should respond to a format module method" do
+      @client.should respond_to(:as_html)
     end
   end
   

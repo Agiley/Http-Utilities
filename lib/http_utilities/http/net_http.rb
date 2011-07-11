@@ -101,7 +101,7 @@ module HttpUtilities
 
                   handle_cookies(use_cookies, save_cookies, response)
 
-                  response = (response.is_a?(String)) ? response : response.body
+                  response = (response.is_a?(String)) ? response : response.body rescue nil
                   #puts "Response body: #{response}"
 
                   if (force_encoding)
@@ -113,7 +113,7 @@ module HttpUtilities
                 end
               end
             end
-          rescue Errno::ETIMEDOUT => error
+          rescue Errno::ETIMEDOUT, Errno::ECONNREFUSED, Errno::ENETUNREACH, Errno::ECONNRESET, Timeout::Error, Net::HTTPUnauthorized, Net::HTTPForbidden => error
             retries += 1
             retry if (retries < max_retries)
           end

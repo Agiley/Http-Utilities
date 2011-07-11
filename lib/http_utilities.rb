@@ -17,10 +17,14 @@ module HttpUtilities
   require File.join(File.dirname(__FILE__), 'http_utilities/http/curb')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/proxy')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/cookies')
-  require File.join(File.dirname(__FILE__), 'http_utilities/http/response_format')
+  require File.join(File.dirname(__FILE__), 'http_utilities/http/user_agent')
+  require File.join(File.dirname(__FILE__), 'http_utilities/http/request')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/get')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/post')
+  require File.join(File.dirname(__FILE__), 'http_utilities/http/format')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/client')
+  
+  require File.join(File.dirname(__FILE__), 'http_utilities/http/mechanize/client')
   
   require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_module')
   require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_checker')
