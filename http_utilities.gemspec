@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sebastian Johnsson"]
-  s.date = %q{2011-07-09}
+  s.date = %q{2011-07-11}
   s.description = %q{Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)}
   s.email = %q{sebastian@agiley.se}
   s.extra_rdoc_files = [
@@ -40,12 +40,15 @@ Gem::Specification.new do |s|
     "lib/http_utilities/http/client.rb",
     "lib/http_utilities/http/cookies.rb",
     "lib/http_utilities/http/curb.rb",
+    "lib/http_utilities/http/format.rb",
     "lib/http_utilities/http/get.rb",
+    "lib/http_utilities/http/mechanize/client.rb",
     "lib/http_utilities/http/net_http.rb",
     "lib/http_utilities/http/open_uri.rb",
     "lib/http_utilities/http/post.rb",
     "lib/http_utilities/http/proxy.rb",
-    "lib/http_utilities/http/response_format.rb",
+    "lib/http_utilities/http/request.rb",
+    "lib/http_utilities/http/user_agent.rb",
     "lib/http_utilities/jobs/proxies/check_proxies_job.rb",
     "lib/http_utilities/jobs/proxies/check_proxy_job.rb",
     "lib/http_utilities/proxies/proxy_checker.rb",
@@ -55,6 +58,7 @@ Gem::Specification.new do |s|
     "lib/tasks/http_utilities_tasks.rake",
     "spec/database.yml.example",
     "spec/http_utilities/client_spec.rb",
+    "spec/http_utilities/mechanize_client_spec.rb",
     "spec/http_utilities/proxy_checker_spec.rb",
     "spec/http_utilities/proxy_seeder_spec.rb",
     "spec/http_utilities/proxy_spec.rb",
@@ -73,6 +77,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rails>, [">= 0"])
       s.add_runtime_dependency(%q<nokogiri>, [">= 0"])
+      s.add_runtime_dependency(%q<mechanize>, [">= 0"])
       s.add_runtime_dependency(%q<activerecord-import>, [">= 0.2.0"])
       s.add_runtime_dependency(%q<curb>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
@@ -84,6 +89,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<rails>, [">= 0"])
       s.add_dependency(%q<nokogiri>, [">= 0"])
+      s.add_dependency(%q<mechanize>, [">= 0"])
       s.add_dependency(%q<activerecord-import>, [">= 0.2.0"])
       s.add_dependency(%q<curb>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
@@ -96,6 +102,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<rails>, [">= 0"])
     s.add_dependency(%q<nokogiri>, [">= 0"])
+    s.add_dependency(%q<mechanize>, [">= 0"])
     s.add_dependency(%q<activerecord-import>, [">= 0.2.0"])
     s.add_dependency(%q<curb>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
