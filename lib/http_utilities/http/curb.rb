@@ -130,9 +130,9 @@ module HttpUtilities
         end
 
         if (self.proxy[:host] && self.proxy[:port])
-          curl.proxy_url    =   Proxy.format_proxy_address(self.proxy[:host], self.proxy[:port], false)
+          curl.proxy_url    =   ::Proxy.format_proxy_address(self.proxy[:host], self.proxy[:port], false)
           curl.proxy_type   =   5 if (self.proxy[:protocol] && self.proxy[:protocol].present? && self.proxy[:protocol].downcase.eql?('socks5'))
-          curl.proxypwd     =   Proxy.format_proxy_credentials(self.proxy[:username], self.proxy[:password]) if (self.proxy[:username] && self.proxy[:password])
+          curl.proxypwd     =   ::Proxy.format_proxy_credentials(self.proxy[:username], self.proxy[:password]) if (self.proxy[:username] && self.proxy[:password])
         end
 
         return curl
