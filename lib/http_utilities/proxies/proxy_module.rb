@@ -27,10 +27,10 @@ module HttpUtilities
           
           uncached do
             begin
-              proxy = where(query).order("successful_attempts DESC, failed_attempts ASC, RAND() DESC").limit(1).first
+              proxy = where(query).order("RAND() DESC").limit(1).first
             rescue ActiveRecord::StatementInvalid
               #If we're using Sqlite, RAND() won't work
-              proxy = where(query).order("successful_attempts DESC, failed_attempts ASC, RANDOM() DESC").limit(1).first
+              proxy = where(query).order("RANDOM() DESC").limit(1).first
             rescue
               proxy = nil
             end
