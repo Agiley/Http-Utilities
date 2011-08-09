@@ -60,8 +60,8 @@ module HttpUtilities
         elsif (method.eql?(:curl))
           response = retrieve_curl_content(url, options)
         end
-
-        #puts "Raw response: #{response}\n\n"
+        
+        response = response.force_encoding('utf-8') if (response)
 
         return response
       end
