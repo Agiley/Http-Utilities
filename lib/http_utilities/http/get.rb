@@ -40,7 +40,6 @@ module HttpUtilities
 
         while (!response && retries < max_retries) do
           options.merge!({:use_proxy => true})
-          puts "Falling back to using proxies..."
           response = retrieve_content_from_url(url, options)
           retries += 1
         end
