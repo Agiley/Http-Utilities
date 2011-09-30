@@ -32,8 +32,9 @@ module HttpUtilities
         def set_agent
           self.agent          =   nil
           self.agent          =   ::Mechanize.new
+          
           #Sometimes Mechanize returns Mechanize::File instead of Mechanize::Page, force text/plain to be parsed as a Page
-          self.agent.pluggable_parser['text/plain'] = ::Mechanize::Page
+          #self.agent.pluggable_parser['text/plain'] = ::Mechanize::Page
         end
 
         def get_parser(page)
