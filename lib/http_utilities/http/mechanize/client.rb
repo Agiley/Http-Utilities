@@ -64,7 +64,13 @@ module HttpUtilities
               form = reset_radiobuttons(form)
               form = set_form_fields(form, fields)
               button = (submit_identifier.nil? || submit_identifier.eql?(:first)) ? form.buttons.first : form.button_with(submit_identifier)
-              response_page = self.agent.submit(form, button) rescue nil
+              
+              begin
+                response_page = self.agent.submit(form, button)
+              rescue Exception => e
+                log(:error, "[HttpUtilities::Http::Mechanize::Client] - Failed to submit form. Error: #{e.class.name} - #{e.message}.")
+              end
+              
             else
               log(:info, "[HttpUtilities::Http::Mechanize::Client] - Couldn't find form with identifier #{form_identifier.inspect}")
             end
