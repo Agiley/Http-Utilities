@@ -18,15 +18,12 @@ module HttpUtilities
         response_only   =   options.delete(:response_only) { |e| true }
 
         if (method.eql?(:net_http))
-          result = post_and_retrieve_content_using_net_http(url, data, options)
+          response = post_and_retrieve_content_using_net_http(url, data, options)
         elsif (method.eql?(:curl))
-          result = post_and_retrieve_content_using_curl(url, data, options)
+          response = post_and_retrieve_content_using_curl(url, data, options)
         end
 
-        result    =   parse_response(result, options[:format])
-        result    =   (response_only) ? result[:response] : result
-
-        return result
+        return response
       end
 
     end

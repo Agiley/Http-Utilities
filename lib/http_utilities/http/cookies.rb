@@ -30,8 +30,13 @@ module HttpUtilities
       def set_cookies(headers, cookies, use_cookies = false, request_cookies = nil, save_cookies = false)
         if (use_cookies || request_cookies)
           cookies         =   (request_cookies) ? request_cookies : cookies
-          cookie_string   =   (cookies && cookies.is_a?(Array)) ? format_cookies(cookies) : cookies
-          headers         =   headers.merge({'cookie' => cookie_string})
+          cookie_string   =   (cookies && cookies.is_a?(Array)) ? format_cookies(cookies) : nil
+          
+          if (cookie_string && cookie_string.present?)
+            cookie_hash     =   {'cookie' => cookie_string}
+            headers         =   (headers && !headers.empty?) ? headers.merge(cookie_hash) : cookie_hash
+          end
+
         elsif (!use_cookies)
           cookies         =   nil
         end

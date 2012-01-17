@@ -47,24 +47,18 @@ module HttpUtilities
       end
 
       def retrieve_content_from_url(url, options = {})
-        result          =   nil
+        response        =   nil
         method          =   options[:method] || :net_http
-        response_only   =   options.delete(:response_only) { |e| true }
 
         if (method.eql?(:open_uri))
-          result = retrieve_open_uri_content(url, options)
-
+          response = retrieve_open_uri_content(url, options)
         elsif (method.eql?(:net_http))
-          result = retrieve_net_http_content(url, options)
-
+          response = retrieve_net_http_content(url, options)
         elsif (method.eql?(:curl))
-          result = retrieve_curl_content(url, options)
+          response = retrieve_curl_content(url, options)
         end
 
-        result    =   parse_response(result, options[:format])
-        result    =   (response_only) ? result[:response] : result
-
-        return result
+        return response
       end
 
     end

@@ -4,7 +4,9 @@ describe HttpUtilities::Http::Client do
 
   describe "when modules have been included" do
     before(:each) do
-      @client = HttpUtilities::Http::Client.new
+      @client     =   HttpUtilities::Http::Client.new
+      @request    =   HttpUtilities::Http::Request.new
+      @response   =   HttpUtilities::Http::Response.new
     end
 
     it "should respond to a net http module method" do
@@ -20,7 +22,7 @@ describe HttpUtilities::Http::Client do
     end
 
     it "should respond to a proxy module method" do
-      @client.should respond_to(:set_proxy_options)
+      @request.should respond_to(:set_proxy_options)
     end
 
     it "should respond to a cookies module method" do
@@ -44,7 +46,7 @@ describe HttpUtilities::Http::Client do
     end
 
     it "should respond to a format module method" do
-      @client.should respond_to(:as_html)
+      @response.should respond_to(:as_html)
     end
   end
 
@@ -72,19 +74,19 @@ describe HttpUtilities::Http::Client do
       it "should fetch Google results as unparsed HTML" do
         params = {:url => "http://www.google.com", :q => "ruby on rails", :start => 0}
         response = @client.retrieve_raw_content(@client.generate_request_url(params), {:method => :net_http})
-        response.should be_a(String)
+        response.body.should be_a(String)
       end
 
       it "should fetch Google results as a Nokogiri::HTML::Document" do
         params = {:url => "http://www.google.com", :q => "ruby on rails", :start => 0}
         response = @client.retrieve_parsed_html(@client.generate_request_url(params), {:method => :net_http})
-        response.should be_a(Nokogiri::HTML::Document)
+        response.parsed_body.should be_a(Nokogiri::HTML::Document)
       end
 
       it "should fetch Google Weather data a Nokogiri::XML::Document" do
         params = {:url => "http://www.google.com/ig/api", :weather => 90120}
         response = @client.retrieve_parsed_xml(@client.generate_request_url(params), {:method => :net_http})
-        response.should be_a(Nokogiri::XML::Document)
+        response.parsed_body.should be_a(Nokogiri::XML::Document)
       end
     end
 
@@ -93,8 +95,8 @@ describe HttpUtilities::Http::Client do
         options = {:method => :net_http, :proxy => "127.0.0.1:80", :response_only => false}
         params = {:url => "http://www.google.com", :q => "ruby on rails", :start => 0}
 
-        result = @client.retrieve_parsed_html(@client.generate_request_url(params), options)
-        proxy = result[:proxy]
+        response = @client.retrieve_parsed_html(@client.generate_request_url(params), options)
+        proxy = response.request.proxy
 
         proxy.should_not be_nil
         proxy[:host].should == '127.0.0.1'
@@ -107,8 +109,8 @@ describe HttpUtilities::Http::Client do
         options = {:method => :net_http, :use_cookies => true, :save_cookies => true, :response_only => false}
         params  = {:url => "http://www.google.com", :q => "ruby on rails", :start => 0}
 
-        result  = @client.retrieve_parsed_html(@client.generate_request_url(params), options)
-        cookies = result[:cookies]
+        response  =   @client.retrieve_parsed_html(@client.generate_request_url(params), options)
+        cookies   =   response.request.cookies
         cookies.should_not be_nil
       end
     end
@@ -129,7 +131,7 @@ describe HttpUtilities::Http::Client do
           options = {:method => :curl}
 
           response = @client.post_and_retrieve_parsed_xml(@trackback_url, @post_data, options)
-          response.should be_a(Nokogiri::XML::Document)
+          response.parsed_body.should be_a(Nokogiri::XML::Document)
         end
       end
 
@@ -137,7 +139,7 @@ describe HttpUtilities::Http::Client do
         options = {:method => :net_http}
 
         response = @client.post_and_retrieve_parsed_xml(@trackback_url, @post_data, options)
-        response.should be_a(Nokogiri::XML::Document)
+        response.parsed_body.should be_a(Nokogiri::XML::Document)
       end
     end
 
