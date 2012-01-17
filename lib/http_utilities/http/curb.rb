@@ -3,9 +3,12 @@ require 'uri'
 module HttpUtilities
   module Http
     module Curb
-      
+
       def post_and_retrieve_content_using_curl(url, data, options = {})
-        curl = set_curl_options(url, options)
+        client  =   self.set_curl_options(url, options)
+        curl    =   client[:curl]
+        proxy   =   client[:proxy]
+
         response = nil
 
         if (curl && data)
@@ -18,81 +21,44 @@ module HttpUtilities
           response = curl.body_str rescue nil
         end
 
-        return response
-      end
-      
-      def retrieve_parsed_xml_concurrently(urls, options = {})
-        return retrieve_parsed_content_concurrently(urls, options, :xml) 
+        return {:response => response, :proxy => proxy, :cookies => nil}
       end
 
-      def retrieve_parsed_html_concurrently(urls, options = {})
-        return retrieve_parsed_content_concurrently(urls, options, :html) 
-      end
-
-      def retrieve_parsed_content_concurrently(urls, options = {}, format = :xml)
-        urls = [*urls]
-        concurrent_requests = options.delete(:concurrent_requests) { |e| 2 }
-
-        multi = Curl::Multi.new
-        responses = []
-
-        urls.slice!(0, concurrent_requests).each do |url|
-          self.add_url_to_multi(multi, url, urls, responses, options, format)
-        end
-
-        multi.perform
-
-        return responses
-      end
-
-      def add_url_to_multi(multi, url, url_queue, responses = [], options = {}, format = :xml)
-        curl = self.set_curl_options(url, options)
-
-        curl.on_success do |data|
-          self.add_url_to_multi(multi, url_queue.shift, url_queue, responses, options) if (url_queue.any?)
-          if (data.body_str && data.body_str.present?)
-            responses << format.eql?(:xml) ? as_xml(data.body_str) : as_html(data.body_str) 
-          end
-        end
-
-        curl.on_failure do |data, error|
-          add_url_to_multi(multi, url_queue.shift, url_queue, responses, options) if (url_queue.any?)
-        end
-
-        multi.add(curl) rescue false
-      end
-      
       def retrieve_curl_content(url, options = {})
-        curl = self.set_curl_options(url, options)
+        client  =   self.set_curl_options(url, options)
+        curl    =   client[:curl]
+        proxy   =   client[:proxy]
 
         begin
-          success = curl.perform
-          response = curl.body_str
-
-          if (response && response.present?)
-            ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
-            response = ic.iconv(response + ' ')[0..-2] rescue nil
-            response = response.force_encoding('utf-8') rescue nil
-          end
+          success   =   curl.perform
+          response  =   curl.body_str
+          response  =   convert_with_iconv(response)
 
         rescue Exception => e
           puts "\n\n#{Time.now}: IMPORTANT! Error occurred while trying to retrieve content from url #{url} and parse it. Error: #{e.message}. Error Class: #{e.class}"
           response = ""
         end
+
+        return {:response => response, :proxy => proxy, :cookies => nil}
       end
 
       def go_to_url(url, options = {})
         success = false
-        curl = self.set_curl_options(url, options)
-        success = curl.perform rescue false      
+
+        client  =   self.set_curl_options(url, options)
+        curl    =   client[:curl]
+        proxy   =   client[:proxy]
+
+        success = curl.perform rescue false
         success = (success && curl.response_code.eql?(200))
+
         return success
       end
 
       def set_curl_options(url, options = {})
         options               =   options.clone()
 
-        self.set_proxy_options(options)
+        proxy                 =   self.set_proxy_options(options)
 
         accept_cookies        =   options.delete(:accept_cookies) { |e| false }
         timeout               =   options.delete(:timeout) { |e| 120 }
@@ -102,7 +68,7 @@ module HttpUtilities
         content_type          =   options.delete(:content_type) { |e| false }
         cookie_file           =   nil
 
-        curl = Curl::Easy.new(url) do |c| 
+        curl = Curl::Easy.new(url) do |c|
           c.headers ||= {}
           c.headers["User-Agent"]     =   c.useragent = randomize_user_agent_string
           c.headers["Accept"]         =   accept_content_type if (accept_content_type)
@@ -124,20 +90,21 @@ module HttpUtilities
           identifier = Time.now.to_date.to_s(:db).gsub("-", "_").gsub("\s", "_").gsub(":", "_")
           cookie_file = File.join(Rails.root, "tmp/cookies", "cookies_#{identifier}.txt")
 
-          curl.enable_cookies = true
-          curl.cookiejar = cookie_file
-          curl.cookiefile = cookie_file
+          curl.enable_cookies   =   true
+          curl.cookiejar        =   cookie_file
+          curl.cookiefile       =   cookie_file
         end
 
-        if (self.proxy[:host] && self.proxy[:port])
-          curl.proxy_url    =   ::Proxy.format_proxy_address(self.proxy[:host], self.proxy[:port], false)
-          curl.proxy_type   =   5 if (self.proxy[:protocol] && self.proxy[:protocol].present? && self.proxy[:protocol].downcase.eql?('socks5'))
-          curl.proxypwd     =   ::Proxy.format_proxy_credentials(self.proxy[:username], self.proxy[:password]) if (self.proxy[:username] && self.proxy[:password])
+        if (proxy[:host] && proxy[:port])
+          curl.proxy_url    =   ::Proxy.format_proxy_address(proxy[:host], proxy[:port], false)
+          curl.proxy_type   =   5 if (proxy[:protocol] && proxy[:protocol].present? && proxy[:protocol].downcase.eql?('socks5'))
+          curl.proxypwd     =   ::Proxy.format_proxy_credentials(proxy[:username], proxy[:password]) if (proxy[:username] && proxy[:password])
         end
 
-        return curl
+        return {:curl => curl, :proxy => proxy}
       end
-      
+
     end
   end
 end
+

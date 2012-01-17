@@ -4,8 +4,10 @@ require 'uri'
 module HttpUtilities
   module Http
     module Proxy
-      
+
       def set_proxy_options(proxy_options = {})
+        current_proxy             =   nil
+
         options                   =   (proxy_options.is_a?(Hash)) ? proxy_options.clone() : {}
 
         use_proxy                 =   options.delete(:use_proxy) { |e| false }
@@ -16,57 +18,69 @@ module HttpUtilities
         reset_proxy               =   options.delete(:reset_proxy) { |e| true }
 
         if (reset_proxy)
-          self.mutex.synchronize do
-            self.proxy              =   {}
-            self.proxy[:host]       =   options.delete(:proxy_host) { |e| nil }
-            self.proxy[:port]       =   options.delete(:proxy_port) { |e| nil }
-            self.proxy[:protocol]   =   options.delete(:proxy_protocol) { |e| :http }
-            self.proxy[:type]       =   options.delete(:proxy_type) { |e| :all }
-          end
+          current_proxy              =   {}
+          current_proxy[:host]       =   options.delete(:proxy_host) { |e| nil }
+          current_proxy[:port]       =   options.delete(:proxy_port) { |e| nil }
+          current_proxy[:protocol]   =   options.delete(:proxy_protocol) { |e| :http }
+          current_proxy[:type]       =   options.delete(:proxy_type) { |e| :all }
         end
 
-        if ((use_proxy || (proxy && proxy.present?)) && !self.using_proxy?)
-          self.mutex.synchronize do
-            if (proxy && proxy.present?)
-              proxy = proxy.gsub(/^http(s)?:\/\//i, "")
-              parts = proxy.split(":")
+        if ((use_proxy || (proxy && proxy.present?)) && !self.using_proxy?(current_proxy))
+          if (proxy && proxy.present?)
+            proxy = proxy.gsub(/^http(s)?:\/\//i, "")
+            parts = proxy.split(":")
 
-              self.proxy[:host] = parts.first rescue nil
-              self.proxy[:port] = parts.second.to_i rescue nil
-            else
-              proxy_object = ::Proxy.get_random_proxy(self.proxy[:protocol], self.proxy[:type])
+            if (parts.size.eql?(2))
+              current_proxy[:host] = parts.first
+              current_proxy[:port] = parts.second.to_i
+            end
 
-              if (proxy_object)
-                self.proxy[:host] = proxy_object.host
-                self.proxy[:port] = proxy_object.port
-              end
+          else
+            proxy_object = ::Proxy.get_random_proxy(current_proxy[:protocol], current_proxy[:type])
+
+            if (proxy_object)
+              current_proxy[:host] = proxy_object.host
+              current_proxy[:port] = proxy_object.port
             end
           end
         end
 
-        if (self.using_proxy? && (!self.proxy[:username] || !self.proxy[:password]))
-          self.mutex.synchronize do
-            if (proxy_username && proxy_username.present? && proxy_password && proxy_password.present?)
-              self.proxy[:username] = proxy_username
-              self.proxy[:password] = proxy_password
-            elsif (proxy_credentials)
-              if (proxy_credentials.is_a?(Hash))
-                self.proxy[:username] = proxy_credentials[:username] rescue nil
-                self.proxy[:password] = proxy_credentials[:password] rescue nil
-              elsif (proxy_credentials.is_a?(String))
-                parts = proxy_credentials.split(":")
-                self.proxy[:username] = parts.first rescue nil
-                self.proxy[:password] = parts.second rescue nil
+        current_proxy = set_proxy_credentials(current_proxy, proxy_username, proxy_password, proxy_credentials)
+
+        return current_proxy
+      end
+
+      def using_proxy?(proxy)
+        return (proxy[:host] && proxy[:host].present? && proxy[:port] && proxy[:port] > 0)
+      end
+
+      def set_proxy_credentials(current_proxy, proxy_username, proxy_password, proxy_credentials)
+        if (self.using_proxy?(current_proxy) && (!current_proxy[:username] || !current_proxy[:password]))
+          if (proxy_username && proxy_username.present? && proxy_password && proxy_password.present?)
+            current_proxy[:username] = proxy_username
+            current_proxy[:password] = proxy_password
+
+          elsif (proxy_credentials)
+            if (proxy_credentials.is_a?(Hash))
+              current_proxy[:username] = proxy_credentials[:username]
+              current_proxy[:password] = proxy_credentials[:password]
+
+            elsif (proxy_credentials.is_a?(String))
+              parts = proxy_credentials.split(":")
+
+              if (parts && parts.any? && parts.size >= 2)
+                current_proxy[:username] = parts.first
+                current_proxy[:password] = parts.second
               end
+
             end
           end
         end
+
+        return current_proxy
       end
 
-      def using_proxy?
-        return (self.proxy[:host] && self.proxy[:host].present? && self.proxy[:port] && self.proxy[:port] > 0)
-      end
-      
     end
   end
 end
+

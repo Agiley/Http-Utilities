@@ -19,16 +19,13 @@ module HttpUtilities
       include HttpUtilities::Http::Post
       include HttpUtilities::Http::Format
       include HttpUtilities::Http::Logger
-      
-      attr_accessor :mutex, :user_agents, :proxy, :cookies
-      
+
+      attr_accessor :user_agents
+
       def initialize
-        self.mutex          =   Mutex.new
-        self.proxy          =   {}
-        self.cookies        =   nil
-        
         set_user_agents
       end
     end
   end
 end
+

@@ -9,7 +9,7 @@ require 'mechanize'
 module HttpUtilities
   module Http
     module Mechanize
-      
+
       class Client
         include HttpUtilities::Http::Proxy
         include HttpUtilities::Http::UserAgent
@@ -17,44 +17,40 @@ module HttpUtilities
         include HttpUtilities::Http::Format
         include HttpUtilities::Http::Logger
 
-        attr_accessor :agent, :mutex, :user_agents, :proxy, :retries, :max_retries
+        attr_accessor :user_agents
 
         def initialize
-          self.mutex          =   Mutex.new
-          self.proxy          =   {}
-          self.retries        =   0
-          self.max_retries    =   5
-          
-          set_user_agents
-          set_agent
+          self.set_user_agents
         end
-        
-        def set_agent
-          self.agent          =   nil
-          self.agent          =   ::Mechanize.new
-          
+
+        def get_agent(options = {})
+          agent          =   ::Mechanize.new
+
           #Sometimes Mechanize returns Mechanize::File instead of Mechanize::Page, force text/plain to be parsed as a Page
-          #self.agent.pluggable_parser['text/plain'] = ::Mechanize::Page
-        end
+          #agent.pluggable_parser['text/plain'] = ::Mechanize::Page
 
-        def get_parser(page)
-          parser = nil
-
-          if (page.is_a?(::Mechanize::Page))
-            parser = page.parser
-          elsif (page.is_a?(::Mechanize::File))
-            parser = as_html(page.body)
-          end
-
-          return parser
+          return agent
         end
 
         def set_form_and_submit(url_or_page, form_identifier = {}, submit_identifier = :first, fields = {}, client_options = {})
+          options         =   client_options.clone()
+          response_only   =   options.delete(:response_only) { |e| true }
+
+          agent = get_agent
+          agent = set_agent_options(agent, options)
+
           page, response_page, form = nil, nil, nil
-          page = (url_or_page.is_a?(String)) ? open_url(url_or_page, client_options) : url_or_page
+          retries, max_retries = 0, 3
+
+          if (url_or_page.is_a?(String))
+            result  =   open_url(agent, url_or_page, options)
+            agent   =   result[:agent]
+            page    =   result[:response]
+          else
+            page    =   url_or_page
+          end
 
           if (page && page.is_a?(::Mechanize::Page)) #Occasionally proxies will yield Mechanize::File instead of a proper page
-
             if (form_identifier.has_key?(:array) && form_identifier.has_key?(:index))
               form = page.forms[form_identifier[:index]]
             else
@@ -62,39 +58,39 @@ module HttpUtilities
             end
 
             if (form)
-              form = reset_radiobuttons(form)
-              form = set_form_fields(form, fields)
-              button = (submit_identifier.nil? || submit_identifier.eql?(:first)) ? form.buttons.first : form.button_with(submit_identifier)
-              
+              form    =   reset_radiobuttons(form)
+              form    =   set_form_fields(form, fields)
+              button  =   (submit_identifier.nil? || submit_identifier.eql?(:first)) ? form.buttons.first : form.button_with(submit_identifier)
+
               begin
-                response_page = self.agent.submit(form, button)
+                response_page = agent.submit(form, button)
               rescue Exception => e
                 log(:error, "[HttpUtilities::Http::Mechanize::Client] - Failed to submit form. Error: #{e.class.name} - #{e.message}.")
               end
-              
+
             else
               log(:info, "[HttpUtilities::Http::Mechanize::Client] - Couldn't find form with identifier #{form_identifier.inspect}")
             end
 
-          elsif ((!page || !page.is_a?(::Mechanize::Page)) && self.retries < self.max_retries)
+          elsif ((!page || !page.is_a?(::Mechanize::Page)) && retries < max_retries)
             log(:info, "[HttpUtilities::Http::Mechanize::Client] - Couldn't find page or it wasn't a page.")
-            self.retries += 1
+            retries += 1
             set_agent
-            set_form_and_submit(url_or_page, form_identifier, submit_identifier, fields, client_options)
+            set_form_and_submit(url_or_page, form_identifier, submit_identifier, fields, options)
           end
 
-          return response_page
+          result = (response_only) ? response_page : {:response => response_page, :agent => agent}
+
+          return result
         end
 
-        def open_url(url, client_options = {})
+        def open_url(agent, url, client_options = {}, open_retries = 0, max_open_retries = 5)
           options = client_options.clone()
-          open_retries, max_open_retries = 0, 5
+
           page = nil
-          
-          set_agent_options(options)
 
           begin
-            page = self.agent.get(url)
+            page = agent.get(url)
 
           rescue Net::HTTPNotFound, ::Mechanize::ResponseCodeError => error
             log(:error, "[HttpUtilities::Http::Mechanize::Client] - 404 occurred for url #{url}. Error message: #{error.message}")
@@ -102,43 +98,42 @@ module HttpUtilities
           rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT, Errno::ECONNRESET, Timeout::Error, Net::HTTPUnauthorized, Net::HTTPForbidden => connection_error
             log(:error, "[HttpUtilities::Http::Mechanize::Client] - Error occurred. Error class: #{connection_error.class.name}. Message: #{connection_error.message}")
 
-            open_retries += 1
-
             if (open_retries < max_open_retries)
-              set_agent
-              set_agent_options(options)
+              open_retries += 1
+
+              agent = get_agent
+              agent = set_agent_options(agent, options)
               retry
             end
 
           rescue StandardError => error
             log(:error, "[HttpUtilities::Http::Mechanize::Client] - Error occurred. Error class: #{error.class.name}. Message: #{error.message}")
 
-            open_retries += 1
-
             if (open_retries < max_open_retries)
-              set_agent
-              set_agent_options(options)
+              open_retries += 1
+
+              agent = get_agent
+              agent = set_agent_options(agent, options)
               retry
             end
           end
 
-          return page
+          return {:agent => agent, :response => page}
         end
-        
-        def set_agent_options(options)
-          self.set_proxy_options(options)
-          self.agent.set_proxy(self.proxy[:host], self.proxy[:port], self.proxy[:username], self.proxy[:password]) if (self.proxy[:host] && self.proxy[:port])
-          
+
+        def set_agent_options(agent, options)
+          proxy = set_proxy_options(options)
+          agent.set_proxy(proxy[:host], proxy[:port], proxy[:username], proxy[:password]) if (proxy[:host] && proxy[:port])
+
           user_agent = randomize_user_agent_string
-          (user_agent) ? self.agent.user_agent = user_agent : self.agent.user_agent_alias = 'Mac Safari'
-          
+          (user_agent) ? agent.user_agent = user_agent : agent.user_agent_alias = 'Mac Safari'
+
           timeout = options.delete(:timeout) { |e| 300 }
-          
-          if (timeout)
-            self.agent.open_timeout = self.agent.read_timeout = timeout
-          end
+          agent.open_timeout = agent.read_timeout = timeout if (timeout)
+
+          return agent
         end
-        
+
         def reset_radiobuttons(form)
           form.radiobuttons.each do |radiobutton|
             radiobutton.checked = false
@@ -148,7 +143,6 @@ module HttpUtilities
         end
 
         def set_form_fields(form, fields)
-
           if (form && fields && !fields.empty?)
             fields.each do |key, value|
               form = set_form_field(form, key, value)
@@ -176,8 +170,21 @@ module HttpUtilities
           return form
         end
 
+        def get_parser(page)
+          parser = nil
+
+          if (page.is_a?(::Mechanize::Page))
+            parser = page.parser
+          elsif (page.is_a?(::Mechanize::File))
+            parser = as_html(page.body)
+          end
+
+          return parser
+        end
+
       end
-      
-    end    
+
+    end
   end
 end
+
