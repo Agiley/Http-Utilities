@@ -42,7 +42,7 @@ module HttpUtilities
         self.page = page
         
         if (page && page.parser)
-          self.body         =   page.parser.content 
+          self.body         =   page.parser.content
           self.parsed_body  =   page.parser
         end
       end
