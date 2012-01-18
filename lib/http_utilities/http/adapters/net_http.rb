@@ -51,13 +51,12 @@ module HttpUtilities
         def perform_net_http_request(request_or_url, uri = nil, options = {}, redirect_count = 0, max_redirects = 5)
           request   =   nil
           response  =   nil
-          cookies   =   nil
           retries, max_retries = 0, 3
 
           if (request_or_url)
-            opts              =   (options.is_a?(Hash)) ? options.clone() : {} #Multi-threading woes...
+            opts              =   (options.is_a?(Hash)) ? options.clone() : {}
             force_encoding    =   opts.delete(:force_encoding) { |e| false }
-            request_cookies   =   opts.delete(:cookies) { |e| nil }
+            cookies           =   opts.delete(:cookies) { |e| nil }
             timeout           =   opts.delete(:timeout) { |e| 60 }
 
             if (request_or_url.is_a?(String))
@@ -69,8 +68,7 @@ module HttpUtilities
 
             if (uri && uri.request_uri)
               headers           =   {"User-Agent" => request.user_agent}
-              headers, cookies  =   set_cookies(headers, cookies, request_cookies)
-              
+              headers           =   set_cookies(headers, cookies)
               request_uri       =   uri.request_uri
               http_request      =   Net::HTTP::Get.new(request_uri, headers)
             end
@@ -78,10 +76,11 @@ module HttpUtilities
             begin
               request.interface.start do |http|
                 http.read_timeout   =   timeout
-                response = http.request(http_request)
+                response            =   http.request(http_request)
               end
 
             rescue Errno::ETIMEDOUT, Errno::ECONNREFUSED, Errno::ENETUNREACH, Errno::ECONNRESET, Timeout::Error, Net::HTTPUnauthorized, Net::HTTPForbidden => error
+              log(:error, "[HttpUtilities::Http::Client] - Error occurred while trying to fetch url '#{uri.request_uri}'. Error Class: #{error.class.name}. Error Message: #{error.message}")
               retries += 1
               retry if (retries < max_retries)
             end
@@ -96,6 +95,8 @@ module HttpUtilities
 
               if (redirect_count < max_redirects)
                 log(:info, "[HttpUtilities::Http::Client] - Redirecting to location: #{response['location']}.")
+                
+                options       =  options.merge(:cookies => request.cookies) if request.cookies
                 response      =  perform_net_http_request(location, uri, options, redirect_count, max_redirects)
               end
             end

@@ -26,7 +26,7 @@ module HttpUtilities
         end
 
         if ((use_proxy || (proxy && proxy.present?)) && !self.using_proxy?)
-          if (proxy && proxy.present?)
+          if (proxy && proxy.is_a?(String) && proxy.present?)
             proxy = proxy.gsub(/^http(s)?:\/\//i, "")
             parts = proxy.split(":")
 
@@ -34,6 +34,9 @@ module HttpUtilities
               self.proxy[:host] = parts.first
               self.proxy[:port] = parts.second.to_i
             end
+
+          elsif (proxy && proxy.is_a?(Hash) && !proxy.empty?)
+            self.proxy          = proxy
 
           else
             proxy_object = ::Proxy.get_random_proxy(self.proxy[:protocol], self.proxy[:type])

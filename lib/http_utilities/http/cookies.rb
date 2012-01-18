@@ -28,16 +28,17 @@ module HttpUtilities
         return cookie_string
       end
 
-      def set_cookies(headers, cookies, request_cookies = nil)
-        cookies           =   (request_cookies) ? request_cookies : cookies
-        cookie_string     =   (cookies && cookies.is_a?(Array)) ? format_cookies(cookies) : nil
-        
-        if (cookie_string && cookie_string.present?)
-          cookie_hash     =   {'cookie' => cookie_string}
-          headers         =   (headers && !headers.empty?) ? headers.merge(cookie_hash) : cookie_hash
+      def set_cookies(headers, cookies)
+        if (cookies && cookies.any?)
+          cookie_string     =   (cookies && cookies.is_a?(Array)) ? format_cookies(cookies) : nil
+
+          if (cookie_string && cookie_string.present?)
+            cookie_hash     =   {'cookie' => cookie_string}
+            headers         =   (headers && !headers.empty?) ? headers.merge(cookie_hash) : cookie_hash
+          end
         end
 
-        return [headers, cookies]
+        return headers
       end
 
     end
