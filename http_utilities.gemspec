@@ -4,14 +4,14 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{http_utilities}
+  s.name = "http_utilities"
   s.version = "0.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sebastian Johnsson"]
-  s.date = %q{2011-07-11}
-  s.description = %q{Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)}
-  s.email = %q{sebastian@agiley.se}
+  s.date = "2012-01-18"
+  s.description = "Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)"
+  s.email = "sebastian@agiley.se"
   s.extra_rdoc_files = [
     "README"
   ]
@@ -37,18 +37,20 @@ Gem::Specification.new do |s|
     "lib/generators/templates/seed_data/proxies/socks5/public/2011_04_11.txt",
     "lib/generators/templates/user_agents.yml",
     "lib/http_utilities.rb",
+    "lib/http_utilities/http/adapters/curb.rb",
+    "lib/http_utilities/http/adapters/net_http.rb",
+    "lib/http_utilities/http/adapters/open_uri.rb",
     "lib/http_utilities/http/client.rb",
     "lib/http_utilities/http/cookies.rb",
-    "lib/http_utilities/http/curb.rb",
     "lib/http_utilities/http/format.rb",
     "lib/http_utilities/http/get.rb",
     "lib/http_utilities/http/logger.rb",
     "lib/http_utilities/http/mechanize/client.rb",
-    "lib/http_utilities/http/net_http.rb",
-    "lib/http_utilities/http/open_uri.rb",
     "lib/http_utilities/http/post.rb",
     "lib/http_utilities/http/proxy.rb",
     "lib/http_utilities/http/request.rb",
+    "lib/http_utilities/http/response.rb",
+    "lib/http_utilities/http/url.rb",
     "lib/http_utilities/http/user_agent.rb",
     "lib/http_utilities/jobs/proxies/check_proxies_job.rb",
     "lib/http_utilities/jobs/proxies/check_proxy_job.rb",
@@ -67,10 +69,10 @@ Gem::Specification.new do |s|
     "spec/schema.rb",
     "spec/spec_helper.rb"
   ]
-  s.homepage = %q{http://github.com/Agiley/http_utilities}
+  s.homepage = "http://github.com/Agiley/http_utilities"
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.6.2}
-  s.summary = %q{Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)}
+  s.rubygems_version = "1.8.10"
+  s.summary = "Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
@@ -79,7 +81,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<rails>, [">= 0"])
       s.add_runtime_dependency(%q<nokogiri>, [">= 0"])
       s.add_runtime_dependency(%q<mechanize>, [">= 0"])
-      s.add_runtime_dependency(%q<activerecord-import>, [">= 0.2.0"])
+      s.add_runtime_dependency(%q<activerecord-import>, [">= 0"])
       s.add_runtime_dependency(%q<curb>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
@@ -91,7 +93,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rails>, [">= 0"])
       s.add_dependency(%q<nokogiri>, [">= 0"])
       s.add_dependency(%q<mechanize>, [">= 0"])
-      s.add_dependency(%q<activerecord-import>, [">= 0.2.0"])
+      s.add_dependency(%q<activerecord-import>, [">= 0"])
       s.add_dependency(%q<curb>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
@@ -104,7 +106,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<rails>, [">= 0"])
     s.add_dependency(%q<nokogiri>, [">= 0"])
     s.add_dependency(%q<mechanize>, [">= 0"])
-    s.add_dependency(%q<activerecord-import>, [">= 0.2.0"])
+    s.add_dependency(%q<activerecord-import>, [">= 0"])
     s.add_dependency(%q<curb>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])

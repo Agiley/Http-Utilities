@@ -3,8 +3,7 @@ source "http://rubygems.org"
 gem 'rails'
 gem 'nokogiri'
 gem 'mechanize'
-gem "activerecord-import", ">= 0.2.0"
-#gem 'activerecord-import', :git => 'git://github.com/Agiley/activerecord-import.git'
+gem "activerecord-import"
 
 platforms :ruby do
   gem 'curb'
