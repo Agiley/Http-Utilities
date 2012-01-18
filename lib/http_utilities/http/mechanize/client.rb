@@ -71,8 +71,8 @@ module HttpUtilities
           end
           
           response              =   HttpUtilities::Http::Response.new
-          response.page         =   response_page
           response.request      =   request
+          response.set_page(response_page)
 
           return response
         end
@@ -111,8 +111,8 @@ module HttpUtilities
           end
         
           response              =   HttpUtilities::Http::Response.new
-          response.page         =   page
           response.request      =   request
+          response.set_page(page)
 
           return response
         end

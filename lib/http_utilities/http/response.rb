@@ -37,6 +37,15 @@ module HttpUtilities
       def parse_response
         self.send("as_#{self.format}".to_sym) if (self.body && self.body.present? && self.format)
       end
+      
+      def set_page(page)
+        self.page = page
+        
+        if (page && page.parser)
+          self.body         =   page.parser.content 
+          self.parsed_body  =   page.parser
+        end
+      end
             
     end
   end
