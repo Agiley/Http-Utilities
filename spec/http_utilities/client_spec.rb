@@ -106,6 +106,7 @@ describe HttpUtilities::Http::Client do
 
         response  =   @client.retrieve_parsed_html(@client.generate_request_url(params), options)
         cookies   =   response.request.cookies
+        
         cookies.should_not be_nil
       end
     end
