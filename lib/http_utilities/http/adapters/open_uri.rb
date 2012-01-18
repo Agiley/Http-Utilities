@@ -7,15 +7,14 @@ module HttpUtilities
       module OpenUri
 
         def retrieve_open_uri_content(url, options = {}, retries = 0, max_retries = 3)
-          response = nil
+          response  =   nil
 
-          options = options.clone()
-
-          open_uri_options = {"UserAgent" => randomize_user_agent_string}
-          open_uri_options[:read_timeout] = options.delete(:timeout) { |e| 120 }
-
+          options   =   options.clone()
           request   =   HttpUtilities::Http::Request.new
           request.set_proxy_options(options)
+
+          open_uri_options = {"UserAgent" => request.user_agent}
+          open_uri_options[:read_timeout] = options.delete(:timeout) { |e| 120 }
 
           if (request.proxy[:host] && request.proxy[:port])
             proxy_address = Proxy.format_proxy_address(request.proxy[:host], request.proxy[:port], true)

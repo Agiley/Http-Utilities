@@ -65,7 +65,7 @@ module HttpUtilities
 
           curl = Curl::Easy.new(url) do |c|
             c.headers ||= {}
-            c.headers["User-Agent"]     =   c.useragent = randomize_user_agent_string
+            c.headers["User-Agent"]     =   c.useragent = request.user_agent
             c.headers["Accept"]         =   accept_content_type if (accept_content_type)
             c.headers["Content-Type"]   =   content_type if (content_type)
             c.timeout                   =   timeout

@@ -12,23 +12,15 @@ module HttpUtilities
 
       class Client
         include HttpUtilities::Http::Proxy
-        include HttpUtilities::Http::UserAgent
         include HttpUtilities::Http::Url
         include HttpUtilities::Http::Logger
-
-        attr_accessor :user_agents
-
-        def initialize
-          self.set_user_agents
-        end
 
         def init_request(options = {})
           request   =   HttpUtilities::Http::Request.new(::Mechanize.new)
           request.set_proxy_options(options)
           request.interface.set_proxy(request.proxy[:host], request.proxy[:port], request.proxy[:username], request.proxy[:password]) if (request.proxy[:host] && request.proxy[:port])
 
-          user_agent = randomize_user_agent_string
-          (user_agent) ? request.interface.user_agent = user_agent : request.interface.user_agent_alias = 'Mac Safari'
+          (request.user_agent) ? request.interface.user_agent = request.user_agent : request.interface.user_agent_alias = 'Mac Safari'
 
           timeout = options.delete(:timeout) { |e| 300 }
           request.interface.open_timeout = request.interface.read_timeout = timeout if (timeout)

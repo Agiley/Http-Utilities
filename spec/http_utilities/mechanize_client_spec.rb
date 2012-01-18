@@ -4,11 +4,12 @@ describe HttpUtilities::Http::Mechanize::Client do
 
   describe "when modules have been included" do
     before(:each) do
-      @client = HttpUtilities::Http::Mechanize::Client.new
+      @client     =   HttpUtilities::Http::Mechanize::Client.new
+      @request    =   HttpUtilities::Http::Request.new
     end
 
     it "should respond to a user agent module method" do
-      @client.should respond_to(:set_user_agents)
+      @request.should respond_to(:user_agent)
     end
 
     it "should respond to a request module method" do
@@ -18,17 +19,12 @@ describe HttpUtilities::Http::Mechanize::Client do
 
   describe "when initialized" do
     before(:each) do
-      @client = HttpUtilities::Http::Mechanize::Client.new
+      @client     =   HttpUtilities::Http::Mechanize::Client.new
+      @request    =   HttpUtilities::Http::Request.new
     end
 
     it "should have assigned user agents" do
-      @client.user_agents.should_not be_nil
-      @client.user_agents.size.should > 0
-    end
-
-    it "should return a randomized user agent" do
-      @client.randomize_user_agent_string.should_not be_nil
-      @client.randomize_user_agent_string.length > 0
+      @request.user_agent.should_not be_nil
     end
 
     it "should submit a google search query successfully" do
@@ -51,4 +47,3 @@ describe HttpUtilities::Http::Mechanize::Client do
   end
 
 end
-

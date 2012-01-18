@@ -20,7 +20,7 @@ module HttpUtilities
 
             request.interface.start do |http|
               headers = {}
-              headers["User-Agent"]     =   randomize_user_agent_string
+              headers["User-Agent"]     =   request.user_agent
               headers["Content-Type"]   =   content_type if (content_type && content_type.present?)
 
               http.post(uri.request_uri, data, headers) do |response_data|
@@ -70,7 +70,7 @@ module HttpUtilities
             end
 
             if (uri && uri.request_uri)
-              headers           =   {"User-Agent" => self.randomize_user_agent_string}
+              headers           =   {"User-Agent" => request.user_agent}
               headers, cookies  =   set_cookies(headers, cookies, use_cookies, request_cookies, save_cookies)
               
               request_uri       =   uri.request_uri

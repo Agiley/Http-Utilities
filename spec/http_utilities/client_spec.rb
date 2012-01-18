@@ -30,7 +30,7 @@ describe HttpUtilities::Http::Client do
     end
 
     it "should respond to a user agent module method" do
-      @client.should respond_to(:set_user_agents)
+      @request.should respond_to(:user_agent)
     end
 
     it "should respond to a request module method" do
@@ -52,17 +52,12 @@ describe HttpUtilities::Http::Client do
 
   describe "when initialized" do
     before(:each) do
-      @client = HttpUtilities::Http::Client.new
+      @client     =   HttpUtilities::Http::Client.new
+      @request    =   HttpUtilities::Http::Request.new
     end
 
-    it "should have assigned user agents" do
-      @client.user_agents.should_not == nil
-      @client.user_agents.size.should > 0
-    end
-
-    it "should return a randomized user agent" do
-      @client.randomize_user_agent_string.should_not == nil
-      @client.randomize_user_agent_string.length > 0
+    it "should have assigned user agent" do
+      @request.user_agent.should_not == nil
     end
 
     it "should return a properly formatted request url using supplied parameters" do

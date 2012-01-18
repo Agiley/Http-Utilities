@@ -16,9 +16,9 @@ module HttpUtilities
         template "http_utilities.rb", "config/initializers/http_utilities.rb" unless file_exists?("config/initializers/http_utilities.rb")
       end
       
-      def copy_user_agents
-        template "user_agents.yml", "config/http_utilities/user_agents.yml" unless file_exists?("config/http_utilities/user_agents.yml")
-      end
+      #def copy_user_agents
+      #  template "user_agents.yml", "config/http_utilities/user_agents.yml" unless file_exists?("config/http_utilities/user_agents.yml")
+      #end
       
       def copy_seed_folder
         copy_dir "seed_data", "db/seed_data"
