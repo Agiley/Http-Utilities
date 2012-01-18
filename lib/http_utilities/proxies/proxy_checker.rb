@@ -56,10 +56,10 @@ module HttpUtilities
 
         Rails.logger.info "#{Time.now}: Fetching Proxy #{proxy.proxy_address}."
 
-        parsed_html = self.client.retrieve_parsed_html("http://www.google.com/webhp?hl=en", options)
+        response = self.client.retrieve_parsed_html("http://www.google.com/webhp?hl=en", options)
 
-        if (parsed_html)
-          title = parsed_html.css("title").first
+        if (response.parsed_body)
+          title = response.parsed_body.css("title").first
 
           if (title && title.content)
             begin
