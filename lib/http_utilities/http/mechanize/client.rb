@@ -36,7 +36,7 @@ module HttpUtilities
           page, response_page, form = nil, nil, nil
 
           if (url_or_page.is_a?(String))
-            response  =   open_url(request, url_or_page, options)
+            response  =   open_url(url_or_page, request, options)
             page      =   response.page
           else
             page      =   url_or_page
@@ -77,9 +77,10 @@ module HttpUtilities
           return response
         end
 
-        def open_url(request, url, client_options = {}, open_retries = 0, max_open_retries = 5)
+        def open_url(url, request = nil, client_options = {}, open_retries = 0, max_open_retries = 5)
           options = client_options.clone()
-
+          request = (request) ? request : init_request(options)
+          
           page = nil
 
           begin
