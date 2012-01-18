@@ -35,20 +35,20 @@ module HttpUtilities
         end
 
         def set_net_http_options(uri, options = {})
-          request   =   HttpUtilities::Http::Request.new
+          request             =   HttpUtilities::Http::Request.new
           request.set_proxy_options(options)
-          request.interface  = Net::HTTP.new(uri.host, uri.port, request.proxy[:host], request.proxy[:port])
+          request.interface   =   Net::HTTP.new(uri.host, uri.port, request.proxy[:host], request.proxy[:port])
 
           return request
         end
 
         def retrieve_net_http_content(url, options = {})
-          uri         =   URI.parse(url) rescue nil
+          uri         =   URI.parse(url)
           request     =   set_net_http_options(uri, options)
           return perform_net_http_request(request, uri, options)
         end
 
-        def perform_net_http_request(request_or_url, uri = nil, options = {}, redirect_count = 0, max_redirects = 3)
+        def perform_net_http_request(request_or_url, uri = nil, options = {}, redirect_count = 0, max_redirects = 5)
           request   =   nil
           response  =   nil
           cookies   =   nil
@@ -57,13 +57,11 @@ module HttpUtilities
           if (request_or_url)
             opts              =   (options.is_a?(Hash)) ? options.clone() : {} #Multi-threading woes...
             force_encoding    =   opts.delete(:force_encoding) { |e| false }
-            use_cookies       =   opts.delete(:use_cookies) { |e| false }
-            save_cookies      =   opts.delete(:save_cookies) { |e| true}
             request_cookies   =   opts.delete(:cookies) { |e| nil }
             timeout           =   opts.delete(:timeout) { |e| 60 }
 
             if (request_or_url.is_a?(String))
-              uri       =   URI.parse(http_or_url) rescue nil
+              uri       =   URI.parse(request_or_url)
               request   =   self.set_net_http_options(uri, options)
             else
               request   =   request_or_url
@@ -71,7 +69,7 @@ module HttpUtilities
 
             if (uri && uri.request_uri)
               headers           =   {"User-Agent" => request.user_agent}
-              headers, cookies  =   set_cookies(headers, cookies, use_cookies, request_cookies, save_cookies)
+              headers, cookies  =   set_cookies(headers, cookies, request_cookies)
               
               request_uri       =   uri.request_uri
               http_request      =   Net::HTTP::Get.new(request_uri, headers)
@@ -94,15 +92,15 @@ module HttpUtilities
 
             if (!(response.code =~ /^30\d{1}/i).nil? && location && location.present? && !location.eql?("/"))
               redirect_count +=   1
-              request.cookies = handle_cookies(use_cookies, save_cookies, response)
+              request.cookies = handle_cookies(response)
 
               if (redirect_count < max_redirects)
-                puts "\nRedirecting to location: #{response['location']}\n"
-                response    =  perform_net_http_request(location, uri, options, redirect_count, max_redirects)
+                log(:info, "[HttpUtilities::Http::Client] - Redirecting to location: #{response['location']}.")
+                response      =  perform_net_http_request(location, uri, options, redirect_count, max_redirects)
               end
             end
 
-            request.cookies   =   handle_cookies(use_cookies, save_cookies, response)
+            request.cookies   =   handle_cookies(response)
             response          =   (response.is_a?(String)) ? response : response.body rescue nil
             response          =   HttpUtilities::Http::Response.new(response, request, options)
           end

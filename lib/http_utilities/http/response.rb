@@ -4,17 +4,20 @@ module HttpUtilities
       include HttpUtilities::Http::Format
       include HttpUtilities::Http::Logger
       
-      attr_accessor :body, :parsed_body, :page, :format, :request
+      attr_accessor :body, :parsed_body, :page, :format, :request, :force_encoding
       
       def initialize(body = nil, request = nil, options = {})
-        self.body         =   body
-        self.request      =   request
+        options               =   options.clone()
         
-        self.parsed_body  =   nil
+        self.body             =   body
+        self.request          =   request
         
-        self.format       =   options.delete(:format) { |e| nil }
+        self.parsed_body      =   nil
         
-        self.convert_with_iconv
+        self.format           =   options.delete(:format) { |e| nil }
+        self.force_encoding   =   options.delete(:force_encoding) { |e| true }
+        
+        self.convert_with_iconv if (self.force_encoding)
         self.parse_response
       end
 
