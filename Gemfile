@@ -5,7 +5,9 @@ gem 'nokogiri'
 gem 'mechanize'
 gem "activerecord-import"
 
-gem 'curb' if !defined?(JRUBY_VERSION)
+platforms :ruby do
+  gem 'curb'
+end
 
 group :development, :test do
   gem 'jeweler'
