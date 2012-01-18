@@ -102,10 +102,22 @@ module HttpUtilities
             end
 
             request.cookies   =   handle_cookies(response)
-            response          =   (response.is_a?(String)) ? response : response.body rescue nil
+            response          =   set_response(response)
             response          =   HttpUtilities::Http::Response.new(response, request, options)
           end
 
+          return response
+        end
+        
+        def set_response(response)
+          if (response.is_a?(String))
+            response = response
+          elsif (response.is_a?(Net::HTTPResponse))
+            response = response.body rescue nil
+          elsif (response.is_a?(HttpUtilities::Http::Response))
+            response = response.body
+          end
+          
           return response
         end
 

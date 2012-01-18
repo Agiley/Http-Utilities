@@ -15,7 +15,9 @@ module HttpUtilities
               cookies << filtered_cookie
             end
           end
-          
+        
+        elsif (response && response.is_a?(HttpUtilities::Http::Response))
+          cookies = (response.request && response.request.cookies) ? response.request.cookies : nil
         end
 
         return cookies
