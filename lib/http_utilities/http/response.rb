@@ -4,7 +4,7 @@ module HttpUtilities
       include HttpUtilities::Http::Format
       include HttpUtilities::Http::Logger
       
-      attr_accessor :body, :parsed_body, :page_object, :format, :request
+      attr_accessor :body, :parsed_body, :page, :format, :request
       
       def initialize(body = nil, request = nil, options = {})
         self.body         =   body

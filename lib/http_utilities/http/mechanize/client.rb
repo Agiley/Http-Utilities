@@ -37,7 +37,7 @@ module HttpUtilities
 
           if (url_or_page.is_a?(String))
             response  =   open_url(request, url_or_page, options)
-            page      =   response.page_object
+            page      =   response.page
           else
             page      =   url_or_page
           end
@@ -71,7 +71,7 @@ module HttpUtilities
           end
           
           response              =   HttpUtilities::Http::Response.new
-          response.page_object  =   response_page
+          response.page         =   response_page
           response.request      =   request
 
           return response
@@ -110,7 +110,7 @@ module HttpUtilities
           end
         
           response              =   HttpUtilities::Http::Response.new
-          response.page_object  =   page
+          response.page         =   page
           response.request      =   request
 
           return response
