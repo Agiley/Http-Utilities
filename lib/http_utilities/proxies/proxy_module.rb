@@ -23,17 +23,15 @@ module HttpUtilities
           conditions << "last_checked_at IS NOT NULL"
           query = conditions.join(" AND ")
           
+          order_clause = case ActiveRecord::Base.connection.class.name
+            when "ActiveRecord::ConnectionAdapters::MysqlAdapter", "ActiveRecord::ConnectionAdapters::Mysql2Adapter" then "RAND() DESC"
+            when "ActiveRecord::ConnectionAdapters::SQLite3Adapter" then "RANDOM() DESC"
+          end
+          
           proxy = nil
           
           uncached do
-            begin
-              proxy = where(query).order("RAND() DESC").limit(1).first
-            rescue ActiveRecord::StatementInvalid
-              #If we're using Sqlite, RAND() won't work
-              proxy = where(query).order("RANDOM() DESC").limit(1).first
-            rescue
-              proxy = nil
-            end
+            proxy = where(query).order(order_clause).limit(1).first
           end
 
           return proxy
