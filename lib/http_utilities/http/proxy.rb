@@ -25,7 +25,7 @@ module HttpUtilities
           self.proxy[:type]       =   options.delete(:proxy_type) { |e| :all }
         end
 
-        if ((use_proxy || (proxy && !self.using_proxy?)
+        if (use_proxy || (proxy && !self.using_proxy?))
           if (proxy && proxy.is_a?(String))
             proxy = proxy.gsub(/^http(s)?:\/\//i, "")
             parts = proxy.split(":")
