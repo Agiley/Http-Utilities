@@ -64,7 +64,7 @@ module HttpUtilities
           if (title && title.content)
             begin
               title = title.content.encode("UTF-8")
-              valid_proxy = (title && title.present? && title.strip.downcase.eql?("google"))
+              valid_proxy = (title && title.strip.downcase.eql?("google"))
               Rails.logger.info "Title is: #{title}. Proxy #{proxy.proxy_address} "
             rescue Exception => e
               Rails.logger.error "Exception occured while trying to validate proxy. Error Class: #{e.class}. Error Message: #{e.message}"

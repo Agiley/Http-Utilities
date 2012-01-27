@@ -34,7 +34,7 @@ module HttpUtilities
         if (cookies && cookies.any?)
           cookie_string     =   (cookies && cookies.is_a?(Array)) ? format_cookies(cookies) : nil
 
-          if (cookie_string && cookie_string.present?)
+          if (cookie_string)
             cookie_hash     =   {'cookie' => cookie_string}
             headers         =   (headers && !headers.empty?) ? headers.merge(cookie_hash) : cookie_hash
           end

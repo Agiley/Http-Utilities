@@ -25,8 +25,8 @@ module HttpUtilities
           self.proxy[:type]       =   options.delete(:proxy_type) { |e| :all }
         end
 
-        if ((use_proxy || (proxy && proxy.present?)) && !self.using_proxy?)
-          if (proxy && proxy.is_a?(String) && proxy.present?)
+        if ((use_proxy || (proxy && !self.using_proxy?)
+          if (proxy && proxy.is_a?(String))
             proxy = proxy.gsub(/^http(s)?:\/\//i, "")
             parts = proxy.split(":")
 
@@ -53,7 +53,7 @@ module HttpUtilities
 
       def set_proxy_credentials(proxy_username, proxy_password, proxy_credentials)
         if (self.using_proxy? && (!self.proxy[:username] || !self.proxy[:password]))
-          if (proxy_username && proxy_username.present? && proxy_password && proxy_password.present?)
+          if (proxy_username && proxy_password)
             self.proxy[:username] = proxy_username
             self.proxy[:password] = proxy_password
 
@@ -76,7 +76,7 @@ module HttpUtilities
       end
       
       def using_proxy?
-        return (self.proxy[:host] && self.proxy[:host].present? && self.proxy[:port] && self.proxy[:port] > 0)
+        return (self.proxy[:host] && self.proxy[:port] && self.proxy[:port] > 0)
       end
 
     end

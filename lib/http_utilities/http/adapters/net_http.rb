@@ -21,7 +21,7 @@ module HttpUtilities
             request.interface.start do |http|
               headers = {}
               headers["User-Agent"]     =   request.user_agent
-              headers["Content-Type"]   =   content_type if (content_type && content_type.present?)
+              headers["Content-Type"]   =   content_type if (content_type)
 
               http.post(uri.request_uri, data, headers) do |response_data|
                 response  =   response_data
@@ -89,7 +89,7 @@ module HttpUtilities
           if (response)
             location = response['location']
 
-            if (!(response.code =~ /^30\d{1}/i).nil? && location && location.present? && !location.eql?("/"))
+            if (!(response.code =~ /^30\d{1}/i).nil? && location && !location.eql?("/"))
               redirect_count +=   1
               request.cookies = handle_cookies(response)
 

@@ -28,7 +28,7 @@ module HttpUtilities
 
       def bulk_import_proxies(proxy_list, protocol, proxy_type, category)        
         columns = [:host, :port, :protocol, :proxy_type, :category]
-        category = (category && category.present? && !category.eql?('unspecified')) ? category : nil
+        category = (category && !category.eql?('unspecified')) ? category : nil
 
         begin
           values = []

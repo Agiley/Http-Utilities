@@ -22,7 +22,7 @@ module HttpUtilities
       end
 
       def convert_with_iconv
-        if (self.body && self.body.present?)
+        if (self.body)
           begin
             ic          =   Iconv.new('UTF-8//IGNORE', 'UTF-8')
             self.body   =   ic.iconv(self.body + ' ')[0..-2]
@@ -35,7 +35,7 @@ module HttpUtilities
       end
 
       def parse_response
-        self.send("as_#{self.format}".to_sym) if (self.body && self.body.present? && self.format)
+        self.send("as_#{self.format}".to_sym) if (self.body && self.format)
       end
       
       def set_page(page)

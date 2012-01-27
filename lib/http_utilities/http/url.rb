@@ -40,7 +40,7 @@ module HttpUtilities
       end
 
       def encode_param(param)
-        return CGI.escape(param.to_s).to_s.gsub("+", "%20").gsub("%7E", "~") if (param && param.present?)
+        return CGI.escape(param.to_s).to_s.gsub("+", "%20").gsub("%7E", "~") if (param)
       end
       
     end
