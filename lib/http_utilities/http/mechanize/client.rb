@@ -3,7 +3,6 @@ require 'open-uri'
 require 'net/http'
 require 'uri'
 require 'cgi'
-require 'iconv'
 require 'mechanize'
 
 module HttpUtilities
@@ -69,7 +68,7 @@ module HttpUtilities
             retries += 1
             set_form_and_submit(url_or_page, form_identifier, submit_identifier, fields, options, retries, max_retries)
           end
-          
+
           response              =   HttpUtilities::Http::Response.new
           response.request      =   request
           response.set_page(response_page)
@@ -80,7 +79,7 @@ module HttpUtilities
         def open_url(url, request = nil, client_options = {}, open_retries = 0, max_open_retries = 5)
           options = client_options.clone()
           request = (request) ? request : init_request(options)
-          
+
           page = nil
 
           begin
@@ -109,7 +108,7 @@ module HttpUtilities
               retry
             end
           end
-        
+
           response              =   HttpUtilities::Http::Response.new
           response.request      =   request
           response.set_page(page)
