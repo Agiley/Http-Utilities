@@ -38,7 +38,7 @@ module HttpUtilities
           elsif (proxy && proxy.is_a?(Hash) && !proxy.empty?)
             self.proxy          = proxy
 
-          else
+          elsif (defined?(::Proxy))
             proxy_object = ::Proxy.get_random_proxy(self.proxy[:protocol], self.proxy[:type])
 
             if (proxy_object)
