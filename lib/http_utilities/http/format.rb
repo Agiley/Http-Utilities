@@ -12,6 +12,10 @@ module HttpUtilities
       def as_xml
         self.parsed_body = (self.body && self.body.present?) ? Nokogiri::XML(self.body, nil, "utf-8") : nil
       end
+      
+      def as_multi_xml
+        self.parsed_body = (self.body && self.body.present?) ? MultiXml.parse(self.body) : nil
+      end
 
       def as_json
         self.parsed_body = (self.body && self.body.present?) ? self.body.to_json : nil

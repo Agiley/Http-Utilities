@@ -25,7 +25,9 @@ module HttpUtilities
   require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_module')
   require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_checker')
   require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_seeder')
-  
+
   require File.join(File.dirname(__FILE__), 'http_utilities/jobs/proxies/check_proxies_job')
   require File.join(File.dirname(__FILE__), 'http_utilities/jobs/proxies/check_proxy_job')
+
+  MultiXml.parser = :nokogiri
 end
