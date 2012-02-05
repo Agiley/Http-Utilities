@@ -89,8 +89,9 @@ module HttpUtilities
           if (response)
             location = response['location']
 
-            if (!(response.code =~ /^30\d{1}/i).nil? && location && !location.eql?("/"))
-              redirect_count +=   1
+            if (!(response.code.to_s =~ /^30\d{1}/i).nil? && location && location.present?)
+              location            =   location.strip.downcase
+              redirect_count     +=   1
               
               if (redirect_count < max_redirects)
                 request.cookies   =   handle_cookies(response)
