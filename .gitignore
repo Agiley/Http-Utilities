@@ -3,7 +3,6 @@
 Gemfile.lock
 pkg/*
 .rvmrc
-Gemfile.lock
 .DS_STORE
 *.sqlite3
 spec/database.yml

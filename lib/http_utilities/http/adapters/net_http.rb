@@ -91,13 +91,15 @@ module HttpUtilities
 
             if (!(response.code =~ /^30\d{1}/i).nil? && location && !location.eql?("/"))
               redirect_count +=   1
-              request.cookies = handle_cookies(response)
-
+              
               if (redirect_count < max_redirects)
-                log(:info, "[HttpUtilities::Http::Client] - Redirecting to location: #{response['location']}.")
+                request.cookies   =   handle_cookies(response)
+                location          =   "http://#{uri.host}/#{location.gsub(/^\//i, "")}" if (uri && (location =~ /^http(s)?/i).nil?)
                 
-                options       =  options.merge(:cookies => request.cookies) if request.cookies
-                response      =  perform_net_http_request(location, uri, options, redirect_count, max_redirects)
+                log(:info, "[HttpUtilities::Http::Client] - Redirecting to location: #{location}.")
+                
+                options           =   options.merge(:cookies => request.cookies) if request.cookies
+                response          =   perform_net_http_request(location, uri, options, redirect_count, max_redirects)
               end
             end
 
