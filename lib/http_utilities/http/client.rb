@@ -3,7 +3,6 @@ require 'open-uri'
 require 'net/http'
 require 'uri'
 require 'cgi'
-require 'iconv'
 
 module HttpUtilities
   module Http
@@ -13,7 +12,7 @@ module HttpUtilities
       include HttpUtilities::Http::Get
       include HttpUtilities::Http::Post
       include HttpUtilities::Http::Logger
-      
+
       include HttpUtilities::Http::Adapters::NetHttp
       include HttpUtilities::Http::Adapters::OpenUri
       include HttpUtilities::Http::Adapters::Curb
