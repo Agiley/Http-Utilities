@@ -51,13 +51,13 @@ module HttpUtilities
         def perform_net_http_request(request_or_url, uri = nil, options = {}, redirect_count = 0, max_redirects = 5)
           request   =   nil
           response  =   nil
-          retries, max_retries = 0, 3
 
           if (request_or_url)
             opts              =   (options.is_a?(Hash)) ? options.clone() : {}
+            retries           =   opts.delete(:retries) { |e| 3 }
             force_encoding    =   opts.delete(:force_encoding) { |e| false }
             cookies           =   opts.delete(:cookies) { |e| nil }
-            timeout           =   opts.delete(:timeout) { |e| 60 }
+            timeout           =   opts.delete(:timeout) { |e| 30 }
 
             if (request_or_url.is_a?(String))
               uri       =   URI.parse(request_or_url)
@@ -81,8 +81,8 @@ module HttpUtilities
 
             rescue Errno::ETIMEDOUT, Errno::ECONNREFUSED, Errno::ENETUNREACH, Errno::ECONNRESET, Timeout::Error, Net::HTTPUnauthorized, Net::HTTPForbidden => error
               log(:error, "[HttpUtilities::Http::Client] - Error occurred while trying to fetch url '#{uri.request_uri}'. Error Class: #{error.class.name}. Error Message: #{error.message}")
-              retries += 1
-              retry if (retries < max_retries)
+              retries -= 1
+              retry if (retries > 0)
             end
           end
 
