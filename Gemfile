@@ -1,9 +1,10 @@
 source "http://rubygems.org"
 
 gem 'rails'
-gem 'nokogiri'
-gem 'mechanize'
-gem 'multi_xml'
+
+gem "nokogiri", "~> 1.5.0"
+gem "mechanize", "~> 2.1.1"
+gem "multi_xml", "~> 0.4.1"
 
 gem "activerecord-import", :require => false
 

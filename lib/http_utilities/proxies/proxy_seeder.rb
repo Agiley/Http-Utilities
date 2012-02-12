@@ -87,10 +87,10 @@ module HttpUtilities
       end
       
       def get_seed_root
-        rails_seed_root = "#{Rails.root}/db/seed_data/proxies/"
-        gem_seed_root = File.join(File.dirname(__FILE__), "../../generators/templates/seed_data/proxies/")
+        rails_seed_root   =   defined?(Rails) ? "#{Rails.root}/db/seed_data/proxies/" : nil
+        gem_seed_root     =   File.join(File.dirname(__FILE__), "../../generators/templates/seed_data/proxies/")
         
-        return File.exists?(rails_seed_root) ? rails_seed_root : gem_seed_root
+        return (rails_seed_root && File.exists?(rails_seed_root)) ? rails_seed_root : gem_seed_root
       end
 
     end

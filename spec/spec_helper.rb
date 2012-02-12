@@ -17,6 +17,7 @@ rescue Bundler::GemNotFound
 end
 
 require "active_record"
+require "logger"
 Bundler.require
 
 require File.expand_path('../../lib/http_utilities', __FILE__)
