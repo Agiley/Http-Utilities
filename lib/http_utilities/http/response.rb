@@ -24,7 +24,7 @@ module HttpUtilities
       def encode
         if (self.body)
           begin
-            self.body = self.body.encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "").force_encoding('UTF-8')
+            self.body = self.body.force_encoding('UTF-8').encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "")
           rescue Exception => e
             log(:error, "[HttpUtilities::Http::Format] - Failed to convert response with String#encode. Error: #{e.class.name}. Message: #{e.message}.")
           end
