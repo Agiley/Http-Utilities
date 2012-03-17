@@ -1,7 +1,7 @@
 module HttpUtilities
   module Http
     class Request
-      include HttpUtilities::Http::Proxy
+      include HttpUtilities::Http::ProxySupport
       include HttpUtilities::Http::UserAgent
       
       attr_accessor :interface, :proxy, :cookies, :user_agent

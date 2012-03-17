@@ -2,7 +2,7 @@
 module HttpUtilities
   require File.join(File.dirname(__FILE__), 'http_utilities/railtie') if defined?(Rails)
 
-  require File.join(File.dirname(__FILE__), 'http_utilities/http/proxy')
+  require File.join(File.dirname(__FILE__), 'http_utilities/http/proxy_support')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/cookies')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/user_agent')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/url')

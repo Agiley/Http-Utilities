@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sebastian Johnsson"]
-  s.date = "2012-02-12"
+  s.date = "2012-03-17"
   s.description = "Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)"
   s.email = "sebastian@agiley.se"
   s.extra_rdoc_files = [
@@ -47,7 +47,6 @@ Gem::Specification.new do |s|
     "lib/http_utilities/http/logger.rb",
     "lib/http_utilities/http/mechanize/client.rb",
     "lib/http_utilities/http/post.rb",
-    "lib/http_utilities/http/proxy.rb",
     "lib/http_utilities/http/request.rb",
     "lib/http_utilities/http/response.rb",
     "lib/http_utilities/http/url.rb",
@@ -71,7 +70,7 @@ Gem::Specification.new do |s|
   ]
   s.homepage = "http://github.com/Agiley/http_utilities"
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.15"
+  s.rubygems_version = "1.8.17"
   s.summary = "Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)"
 
   if s.respond_to? :specification_version then

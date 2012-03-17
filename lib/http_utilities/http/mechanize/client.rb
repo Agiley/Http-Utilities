@@ -12,7 +12,7 @@ module HttpUtilities
       class Client
         attr_accessor :agent, :proxy, :user_agent
         
-        include HttpUtilities::Http::Proxy
+        include HttpUtilities::Http::ProxySupport
         include HttpUtilities::Http::Url
         include HttpUtilities::Http::Logger
         include HttpUtilities::Http::UserAgent
@@ -51,7 +51,6 @@ module HttpUtilities
             if (retries > 0)
               reset_agent(options)
               retries -= 1
-              
               retry
             end
             
@@ -59,9 +58,8 @@ module HttpUtilities
             log(:error, "[HttpUtilities::Http::Mechanize::Client] - Error occurred. Error class: #{connection_error.class.name}. Message: #{connection_error.message}")
 
             if (retries > 0)
-              reset_agent
+              reset_agent(options)
               retries -= 1
-              
               retry
             end
           end
@@ -105,7 +103,7 @@ module HttpUtilities
           elsif ((!page || !page.is_a?(::Mechanize::Page)) && retries > 0)
             log(:info, "[HttpUtilities::Http::Mechanize::Client] - Couldn't find page or it wasn't a page.")
             retries -= 1
-            reset_agent
+            reset_agent(options)
             set_form_and_submit(url_or_page, form_identifier, submit_identifier, fields, options, retries)
           end
 
@@ -167,4 +165,3 @@ module HttpUtilities
     end
   end
 end
-
