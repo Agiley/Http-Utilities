@@ -5,24 +5,22 @@ module HttpUtilities
   module Http
     module Proxy
 
-      def set_proxy_options(proxy_options = {})
+      def set_proxy_options(options = {})
         self.proxy                =   {}
 
-        options                   =   (proxy_options.is_a?(Hash)) ? proxy_options.clone() : {}
-
-        use_proxy                 =   options.delete(:use_proxy) { |e| false }
-        proxy                     =   options.delete(:proxy) { |e| nil }
-        proxy_username            =   options.delete(:proxy_username) { |e| nil }
-        proxy_password            =   options.delete(:proxy_password) { |e| nil }
-        proxy_credentials         =   options.delete(:proxy_credentials) { |e| nil }
-        reset_proxy               =   options.delete(:reset_proxy) { |e| true }
+        use_proxy                 =   options.fetch(:use_proxy, false)
+        proxy                     =   options.fetch(:proxy, nil)
+        proxy_username            =   options.fetch(:proxy_username, nil)
+        proxy_password            =   options.fetch(:proxy_password, nil)
+        proxy_credentials         =   options.fetch(:proxy_credentials, nil)
+        reset_proxy               =   options.fetch(:reset_proxy, true)
 
         if (reset_proxy)
           self.proxy              =   {}
-          self.proxy[:host]       =   options.delete(:proxy_host) { |e| nil }
-          self.proxy[:port]       =   options.delete(:proxy_port) { |e| nil }
-          self.proxy[:protocol]   =   options.delete(:proxy_protocol) { |e| :http }
-          self.proxy[:type]       =   options.delete(:proxy_type) { |e| :all }
+          self.proxy[:host]       =   options.fetch(:proxy_host, nil)
+          self.proxy[:port]       =   options.fetch(:proxy_port, nil)
+          self.proxy[:protocol]   =   options.fetch(:proxy_protocol, :http)
+          self.proxy[:type]       =   options.fetch(:proxy_type, :all)
         end
 
         if (use_proxy || (proxy && !self.using_proxy?))

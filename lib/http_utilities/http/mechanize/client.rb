@@ -10,45 +10,46 @@ module HttpUtilities
     module Mechanize
 
       class Client
-        attr_accessor :request
+        attr_accessor :agent, :proxy, :user_agent
         
         include HttpUtilities::Http::Proxy
         include HttpUtilities::Http::Url
         include HttpUtilities::Http::Logger
-
-        def init_request(options = {})
-          unless (self.request)
-            agent           =   ::Mechanize.new
-            self.request    =   HttpUtilities::Http::Request.new
-
-            self.request.set_proxy_options(options)
-            agent.set_proxy(self.request.proxy[:host], self.request.proxy[:port], self.request.proxy[:username], self.request.proxy[:password]) if (self.request.proxy[:host] && self.request.proxy[:port])
-            (self.request.user_agent) ? agent.user_agent = self.request.user_agent : agent.user_agent_alias = 'Mac Safari'
-
-            timeout                   =   options.fetch(:timeout, 300)
-            agent.open_timeout        =   agent.read_timeout = timeout if (timeout)
-            self.request.interface    =   agent
-          end
+        include HttpUtilities::Http::UserAgent
+        
+        def initialize(options = {})
+          init_agent(options)
         end
         
-        def reset_request
-          self.request = nil
+        def init_agent(options = {})
+          self.agent = ::Mechanize.new
+          
+          self.set_proxy_options(options)
+          self.agent.set_proxy(self.proxy[:host], self.proxy[:port], self.proxy[:username], self.proxy[:password]) if (self.proxy[:host] && self.proxy[:port])
+          
+          self.set_user_agent
+          (self.user_agent) ? self.agent.user_agent = self.user_agent : self.agent.user_agent_alias = 'Mac Safari'
+          
+          timeout                   =   options.fetch(:timeout, 300)
+          self.agent.open_timeout   =   self.agent.read_timeout = timeout if (timeout)
+        end
+        
+        def reset_agent(options = {})
+          self.agent, self.proxy, self.user_agent = nil
+          init_agent(options)
         end
         
         def open_url(url, options = {}, retries = 3)
-          init_request(options)
-
           page = nil
 
           begin
-            page = self.request.interface.get(url)
+            page = self.agent.get(url)
 
           rescue Net::HTTPNotFound, ::Mechanize::ResponseCodeError => error
             log(:error, "[HttpUtilities::Http::Mechanize::Client] - Response Code Error occurred for url #{url}. Error class: #{error.class.name}. Error message: #{error.message}")
             
             if (retries > 0)
-              reset_request
-              init_request(options)
+              reset_agent(options)
               retries -= 1
               
               retry
@@ -58,31 +59,22 @@ module HttpUtilities
             log(:error, "[HttpUtilities::Http::Mechanize::Client] - Error occurred. Error class: #{connection_error.class.name}. Message: #{connection_error.message}")
 
             if (retries > 0)
-              reset_request
-              init_request(options)
+              reset_agent
               retries -= 1
               
               retry
             end
           end
 
-          response              =   HttpUtilities::Http::Response.new
-          response.request      =   self.request
-          response.set_page(page)
-
-          return response
+          return page
         end
 
         def set_form_and_submit(url_or_page, form_identifier = {}, submit_identifier = :first, fields = {}, options = {}, retries = 3)
-          init_request(options)
-          
-          response_only               =   options.fetch(:response_only, true)
           should_reset_radio_buttons  =   options.fetch(:should_reset_radio_buttons, false)
           page, response_page, form   =   nil, nil, nil
 
           if (url_or_page.is_a?(String))
-            response    =   open_url(url_or_page, options)
-            page        =   response.page
+            page        =   open_url(url_or_page, options)
           else
             page        =   url_or_page
           end
@@ -101,7 +93,7 @@ module HttpUtilities
               button          =     (submit_identifier.nil? || submit_identifier.eql?(:first)) ? form.buttons.first : form.button_with(submit_identifier)
 
               begin
-                response_page = self.request.interface.submit(form, button)
+                response_page = self.agent.submit(form, button)
               rescue Exception => e
                 log(:error, "[HttpUtilities::Http::Mechanize::Client] - Failed to submit form. Error: #{e.class.name} - #{e.message}.")
               end
@@ -113,15 +105,11 @@ module HttpUtilities
           elsif ((!page || !page.is_a?(::Mechanize::Page)) && retries > 0)
             log(:info, "[HttpUtilities::Http::Mechanize::Client] - Couldn't find page or it wasn't a page.")
             retries -= 1
-            reset_request
+            reset_agent
             set_form_and_submit(url_or_page, form_identifier, submit_identifier, fields, options, retries)
           end
 
-          response              =   HttpUtilities::Http::Response.new
-          response.request      =   self.request
-          response.set_page(response_page)
-
-          return response
+          return response_page
         end
 
         def reset_radio_buttons(form)

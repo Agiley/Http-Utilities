@@ -4,6 +4,11 @@ module HttpUtilities
   module Http
     module UserAgent
       
+      def set_user_agent
+        user_agent        =   (USER_AGENTS && USER_AGENTS.any?) ? USER_AGENTS[rand(USER_AGENTS.size)] : ""
+        self.user_agent   =   user_agent if (user_agent && self.respond_to?(:user_agent=))
+      end
+      
       USER_AGENTS = 
       [
         "Mozilla/5.0 (Windows; U; MSIE 7.0; Windows NT 6.0; en-US)",
