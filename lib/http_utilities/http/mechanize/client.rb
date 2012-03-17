@@ -12,9 +12,9 @@ module HttpUtilities
       class Client
         attr_accessor :agent, :proxy, :user_agent
         
-        include HttpUtilities::Http::ProxySupport
-        include HttpUtilities::Http::Url
         include HttpUtilities::Http::Logger
+        include HttpUtilities::Http::Url
+        include HttpUtilities::Http::ProxySupport
         include HttpUtilities::Http::UserAgent
         
         def initialize(options = {})

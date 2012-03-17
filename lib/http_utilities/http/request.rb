@@ -1,6 +1,7 @@
 module HttpUtilities
   module Http
     class Request
+      include HttpUtilities::Http::Logger
       include HttpUtilities::Http::ProxySupport
       include HttpUtilities::Http::UserAgent
       
