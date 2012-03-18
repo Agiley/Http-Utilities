@@ -37,7 +37,7 @@ module HttpUtilities
           elsif (proxy_model_defined?)
             proxy_object = Proxy.get_random_proxy(self.proxy[:protocol], self.proxy[:type])
             
-            log(:info, "[HttpUtilities::Http::ProxySupport] - Randomized Proxy object: #{proxy_object.inspect}")
+            #log(:info, "[HttpUtilities::Http::ProxySupport] - Randomized Proxy object: #{proxy_object.inspect}")
 
             if (proxy_object)
               self.proxy[:host]   =   proxy_object.host
