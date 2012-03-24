@@ -16,23 +16,25 @@ module HttpUtilities
         self.maximum_failed_attempts = 2
       end
 
-      def check_and_update_proxies(protocol = :all, proxy_type = :all, method = nil)
-        check_proxies(protocol, proxy_type, method)
+      def check_and_update_proxies(protocol = :all, proxy_type = :all, mode = :synchronous)
+        check_proxies(protocol, proxy_type, mode)
         update_proxies
       end
 
-      def check_proxies(protocol = :all, proxy_type = :all, method = nil)
-        method = processing_method(method)
+      def check_proxies(protocol = :all, proxy_type = :all, mode = :synchronous)
         proxies = Proxy.should_be_checked(protocol, proxy_type, Time.now, self.limit)
 
         if (proxies && proxies.any?)
           Rails.logger.info "Found #{proxies.size} #{proxy_type} proxies to check."
 
           proxies.each do |proxy|
-            if (method.eql?(:jobs))
-              Resque.enqueue(HttpUtilities::Jobs::Proxies::CheckProxyJob, proxy.id)
-            elsif (method.eql?(:iterate))
-              check_proxy(proxy)
+            case mode
+              when :synchronous
+                check_proxy(proxy)
+              when :resque
+                Resque.enqueue(HttpUtilities::Jobs::Proxies::CheckProxyJob, proxy.id)
+              when :sidekiq
+                HttpUtilities::Jobs::Proxies::CheckProxyJob.perform_async(proxy.id)
             end
           end
 
@@ -58,7 +60,7 @@ module HttpUtilities
 
         response = self.client.retrieve_parsed_html("http://www.google.com/webhp?hl=en", options)
 
-        if (response.parsed_body)
+        if (response && response.parsed_body)
           title = response.parsed_body.css("title").first
 
           if (title && title.content)
