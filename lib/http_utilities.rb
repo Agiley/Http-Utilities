@@ -27,8 +27,15 @@ module HttpUtilities
     require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_checker')
     require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_seeder')
 
-    require File.join(File.dirname(__FILE__), 'http_utilities/jobs/proxies/check_proxies_job')
-    require File.join(File.dirname(__FILE__), 'http_utilities/jobs/proxies/check_proxy_job')
+    if defined?(Resque)
+      require File.join(File.dirname(__FILE__), 'http_utilities/jobs/resque/proxies/check_proxies_job')
+      require File.join(File.dirname(__FILE__), 'http_utilities/jobs/resque/proxies/check_proxy_job')
+    end
+    
+    if defined?(Sidekiq)
+      require File.join(File.dirname(__FILE__), 'http_utilities/jobs/sidekiq/proxies/check_proxies_job')
+      require File.join(File.dirname(__FILE__), 'http_utilities/jobs/sidekiq/proxies/check_proxy_job')
+    end
   end
 
   if defined?(MultiXml)

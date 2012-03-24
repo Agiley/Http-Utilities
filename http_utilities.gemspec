@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sebastian Johnsson"]
-  s.date = "2012-03-18"
+  s.date = "2012-03-24"
   s.description = "Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)"
   s.email = "sebastian@agiley.se"
   s.extra_rdoc_files = [
@@ -52,8 +52,6 @@ Gem::Specification.new do |s|
     "lib/http_utilities/http/response.rb",
     "lib/http_utilities/http/url.rb",
     "lib/http_utilities/http/user_agent.rb",
-    "lib/http_utilities/jobs/proxies/check_proxies_job.rb",
-    "lib/http_utilities/jobs/proxies/check_proxy_job.rb",
     "lib/http_utilities/proxies/proxy_checker.rb",
     "lib/http_utilities/proxies/proxy_module.rb",
     "lib/http_utilities/proxies/proxy_seeder.rb",
