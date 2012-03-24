@@ -3,7 +3,7 @@ module HttpUtilities
     module Sidekiq
       module Proxies
         class CheckProxiesJob
-          include Sidekiq::Worker
+          include ::Sidekiq::Worker
           queue :proxies
 
           def perform(protocol = :all, proxy_type = :all, mode = :synchronous)

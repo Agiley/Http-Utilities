@@ -3,7 +3,7 @@ module HttpUtilities
     module Sidekiq
       module Proxies
         class CheckProxyJob
-          include Sidekiq::Worker
+          include ::Sidekiq::Worker
           queue :proxies
 
           def perform(proxy_id)
