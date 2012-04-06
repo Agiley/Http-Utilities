@@ -4,7 +4,7 @@ module HttpUtilities
       module Proxies
         class CheckProxyJob
           include ::Sidekiq::Worker
-          queue :proxies
+          sidekiq_options :queue    =>  :proxies
 
           def perform(proxy_id)
             proxy_object = ::Proxy.find(proxy_id) rescue nil

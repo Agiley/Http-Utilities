@@ -4,7 +4,8 @@ module HttpUtilities
       module Proxies
         class CheckProxiesJob
           include ::Sidekiq::Worker
-          queue :proxies
+          sidekiq_options :queue    =>  :proxies,
+                          :unique   =>  false
 
           def perform(protocol = :all, proxy_type = :all, mode = :synchronous)
             HttpUtilities::Proxies::ProxyChecker.new.check_proxies(protocol.to_sym, proxy_type.to_sym, mode.to_sym)
