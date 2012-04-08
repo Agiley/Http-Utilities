@@ -10,7 +10,7 @@ namespace :http_utilities do
     task :check_proxies, [:protocol, :proxy_type, :processing_method] => [:environment] do |task, args|
       protocol                =   (args.protocol)             ?   args.protocol.to_sym            : :http
       proxy_type              =   (args.proxy_type)           ?   args.proxy_type.to_sym          : :public
-      processing_method       =   (args.processing_method)    ?   args.processing_method.to_sym   : :jobs
+      processing_method       =   (args.processing_method)    ?   args.processing_method.to_sym   : :synchronous
       
       proxy_checker = HttpUtilities::Proxies::ProxyChecker.new
       proxy_checker.check_and_update_proxies(protocol, proxy_type, processing_method)

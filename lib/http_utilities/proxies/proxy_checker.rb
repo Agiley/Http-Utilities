@@ -112,14 +112,6 @@ module HttpUtilities
         end
 
       end
-      
-      def processing_method(method = nil)
-        if (method.nil? || method.to_sym.eql?(:jobs))
-          method = (defined?(Resque)) ? :jobs : :iterate
-        end
-        
-        return method
-      end
 
     end
   end
