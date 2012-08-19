@@ -71,18 +71,18 @@ module HttpUtilities
               headers           =   set_cookies(headers, cookies)
               request_uri       =   uri.request_uri
               http_request      =   Net::HTTP::Get.new(request_uri, headers)
-            end
+              
+              begin
+                request.interface.start do |http|
+                  http.read_timeout   =   timeout
+                  response            =   http.request(http_request)
+                end
 
-            begin
-              request.interface.start do |http|
-                http.read_timeout   =   timeout
-                response            =   http.request(http_request)
+              rescue Errno::ETIMEDOUT, Errno::ECONNREFUSED, Errno::ENETUNREACH, Errno::ECONNRESET, Timeout::Error, Net::HTTPUnauthorized, Net::HTTPForbidden => error
+                log(:error, "[HttpUtilities::Http::Client] - Error occurred while trying to fetch url '#{uri.request_uri}'. Error Class: #{error.class.name}. Error Message: #{error.message}")
+                retries -= 1
+                retry if (retries > 0)
               end
-
-            rescue Errno::ETIMEDOUT, Errno::ECONNREFUSED, Errno::ENETUNREACH, Errno::ECONNRESET, Timeout::Error, Net::HTTPUnauthorized, Net::HTTPForbidden => error
-              log(:error, "[HttpUtilities::Http::Client] - Error occurred while trying to fetch url '#{uri.request_uri}'. Error Class: #{error.class.name}. Error Message: #{error.message}")
-              retries -= 1
-              retry if (retries > 0)
             end
           end
 
