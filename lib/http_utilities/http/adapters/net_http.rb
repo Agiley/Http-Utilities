@@ -66,7 +66,7 @@ module HttpUtilities
               request   =   request_or_url
             end
 
-            if (uri && uri.request_uri)
+            if (uri && uri.respond_to?(:request_uri) && uri.request_uri)
               headers           =   {"User-Agent" => request.user_agent}
               headers           =   set_cookies(headers, cookies)
               request_uri       =   uri.request_uri
