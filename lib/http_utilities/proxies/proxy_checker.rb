@@ -8,12 +8,12 @@ module HttpUtilities
       attr_accessor :limit, :minimum_successful_attempts, :maximum_failed_attempts
 
       def initialize
-        self.client = HttpUtilities::Http::Client.new
-        self.processed_proxies = []
+        self.client                       =   HttpUtilities::Http::Client.new
+        self.processed_proxies            =   []
         
-        self.limit = 1000
-        self.minimum_successful_attempts = 1
-        self.maximum_failed_attempts = 2
+        self.limit                        =   1000
+        self.minimum_successful_attempts  =   1
+        self.maximum_failed_attempts      =   10
       end
 
       def check_and_update_proxies(protocol = :all, proxy_type = :all, mode = :synchronous)
@@ -44,8 +44,8 @@ module HttpUtilities
       end
       
       def check_proxy(proxy, timeout = 60)
-        document = nil
-        valid_proxy = false
+        document      =   nil
+        valid_proxy   =   false
 
         options = {:method              =>  :net_http,
                    :use_proxy           =>  true, 
@@ -58,19 +58,23 @@ module HttpUtilities
 
         Rails.logger.info "#{Time.now}: Fetching Proxy #{proxy.proxy_address}."
 
-        response = self.client.retrieve_parsed_html("http://www.google.com/webhp?hl=en", options)
+        response            =   self.client.retrieve_parsed_html("http://www.google.com/webhp?hl=en", options)
 
         if (response && response.parsed_body)
-          title = response.parsed_body.css("title").first
+          title             =   response.parsed_body.css("title").first
 
           if (title && title.content)
             begin
-              title = title.content.encode("UTF-8")
-              valid_proxy = (title && title.strip.downcase.eql?("google"))
-              Rails.logger.info "Title is: #{title}. Proxy #{proxy.proxy_address} "
+              title         =   title.content.encode("UTF-8").strip.downcase
+              body_content  =   response.parsed_body.content.to_s.encode("UTF-8").strip.downcase
+              
+              valid_proxy   =   (title.eql?("google") || !(body_content =~ /google home/i).nil?)
+              
+              Rails.logger.info "Title is: #{title}. Proxy #{proxy.proxy_address}"
+              
             rescue Exception => e
               Rails.logger.error "Exception occured while trying to validate proxy. Error Class: #{e.class}. Error Message: #{e.message}"
-              valid_proxy = false
+              valid_proxy   =   false
             end
           end
         end
@@ -85,27 +89,27 @@ module HttpUtilities
       end
 
       def update_proxies()
-        columns = [:host, :port, :last_checked_at, :valid_proxy, :successful_attempts, :failed_attempts]
-        values = []
+        columns   =   [:host, :port, :last_checked_at, :valid_proxy, :successful_attempts, :failed_attempts]
+        values    =   []
 
         Rails.logger.info "Updating/Importing #{self.processed_proxies.size} proxies"
 
         if (self.processed_proxies && self.processed_proxies.any?)
           self.processed_proxies.each do |value|
-            proxy = value[:proxy]
-            valid = value[:valid]
-            successful_attempts = proxy.successful_attempts
-            failed_attempts = proxy.failed_attempts
+            proxy                 =   value[:proxy]
+            valid                 =   value[:valid]
+            successful_attempts   =   proxy.successful_attempts
+            failed_attempts       =   proxy.failed_attempts
 
             if (valid)
-              successful_attempts += 1
+              successful_attempts +=  1
             else
-              failed_attempts += 1
+              failed_attempts     +=  1
             end
 
-            is_valid = (successful_attempts >= self.minimum_successful_attempts && failed_attempts < self.maximum_failed_attempts)
-            value_arr = [proxy.host, proxy.port, Time.now, is_valid, successful_attempts, failed_attempts]
-            values << value_arr
+            is_valid              =   (successful_attempts >= self.minimum_successful_attempts && failed_attempts < self.maximum_failed_attempts)
+            value_arr             =   [proxy.host, proxy.port, Time.now, is_valid, successful_attempts, failed_attempts]
+            values                <<  value_arr
           end
 
           ::Proxy.import(columns, values, :on_duplicate_key_update => [:last_checked_at, :valid_proxy, :successful_attempts, :failed_attempts], :validate => false)
