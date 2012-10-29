@@ -20,7 +20,7 @@ module HttpUtilities
             proxy_address = Proxy.format_proxy_address(request.proxy[:host], request.proxy[:port], true)
             open_uri_options[:proxy] = proxy_address
 
-            if (proxy[:username] && proxy[:password])
+            if (request.proxy[:username] && request.proxy[:password])
               open_uri_options[:proxy_http_basic_authentication] = [proxy_address, request.proxy[:username], request.proxy[:password]]
             end
           end
@@ -44,4 +44,3 @@ module HttpUtilities
     end
   end
 end
-
