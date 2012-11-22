@@ -76,9 +76,15 @@ module HttpUtilities
           File.open(file_path, 'r') {|f| proxy_rows = f.readlines("\n") }
 
           proxy_rows.each do |row|
-            parts = row.split(":")
-            host = parts.first rescue nil
-            port = parts.second.to_i rescue nil
+            host, port  =   nil
+            
+            parts       =   row.include?(":") ? row.split(":") : nil
+            
+            if (parts && parts.any? && parts.size >= 2)
+              host        =   parts.first
+              port        =   parts.second.to_i
+            end
+            
             proxies << {:host => host, :port => port} if (host && port)
           end
         end

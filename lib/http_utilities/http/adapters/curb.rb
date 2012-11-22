@@ -14,8 +14,8 @@ module HttpUtilities
               data = data.map { |key, value| Curl::PostField.content(key.to_s, value.to_s) }
             end
 
-            request.interface.http_post(data) rescue nil
-            response = request.interface.body_str rescue nil
+            request.interface.http_post(data)
+            response = request.interface.body_str
             response = HttpUtilities::Http::Response.new(response, request, options)
           end
 
@@ -43,7 +43,7 @@ module HttpUtilities
 
           request = self.set_curl_options(url, options)
 
-          success = request.interface.perform rescue false
+          success = request.interface.perform
           success = (success && curl.response_code.eql?(200))
 
           return success

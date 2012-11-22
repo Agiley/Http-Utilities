@@ -27,7 +27,7 @@ module HttpUtilities
 
           connection = nil
           while (connection.nil? && retries < max_retries)
-            connection = open(url, open_uri_options) rescue nil
+            connection = open(url, open_uri_options)
             retries += 1
           end
 

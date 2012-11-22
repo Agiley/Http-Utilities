@@ -8,7 +8,7 @@ module HttpUtilities
       module NetHttp
 
         def post_and_retrieve_content_using_net_http(url, data, options = {})
-          uri             =   URI.parse(url) rescue nil
+          uri             =   URI.parse(url)
           request         =   set_net_http_options(uri, options)
           response        =   nil
 
@@ -116,7 +116,7 @@ module HttpUtilities
           if (response.is_a?(String))
             response = response
           elsif (response.is_a?(Net::HTTPResponse))
-            response = response.body rescue nil
+            response = response.body
           elsif (response.is_a?(HttpUtilities::Http::Response))
             response = response.body
           end
