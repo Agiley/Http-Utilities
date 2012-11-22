@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "http_utilities"
-  s.version = "0.10.0"
+  s.version = "0.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Sebastian Johnsson"]
-  s.date = "2012-09-19"
+  s.date = "2012-11-22"
   s.description = "Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)"
   s.email = "sebastian@agiley.se"
   s.extra_rdoc_files = [
@@ -30,11 +30,6 @@ Gem::Specification.new do |s|
     "lib/generators/http_utilities/http_utilities_generator.rb",
     "lib/generators/templates/http_utilities.rb",
     "lib/generators/templates/resque_schedule.yml",
-    "lib/generators/templates/seed_data/proxies/http/public/L1/2011_04_11.txt",
-    "lib/generators/templates/seed_data/proxies/http/public/L2/2011_04_11.txt",
-    "lib/generators/templates/seed_data/proxies/http/public/L3/2010_08_18_1.txt",
-    "lib/generators/templates/seed_data/proxies/http/public/unspecified/2011_04_11.txt",
-    "lib/generators/templates/seed_data/proxies/socks5/public/2011_04_11.txt",
     "lib/generators/templates/user_agents.yml",
     "lib/http_utilities.rb",
     "lib/http_utilities/http/adapters/curb.rb",
@@ -73,46 +68,46 @@ Gem::Specification.new do |s|
   ]
   s.homepage = "http://github.com/Agiley/http_utilities"
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.17"
+  s.rubygems_version = "1.8.24"
   s.summary = "Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<rails>, [">= 0"])
       s.add_runtime_dependency(%q<nokogiri>, [">= 1.5.5"])
       s.add_runtime_dependency(%q<mechanize>, [">= 2.5"])
       s.add_runtime_dependency(%q<multi_xml>, [">= 0.5"])
       s.add_runtime_dependency(%q<activerecord-import>, [">= 0"])
       s.add_runtime_dependency(%q<curb>, [">= 0"])
+      s.add_development_dependency(%q<rails>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
       s.add_development_dependency(%q<rspec>, [">= 0"])
       s.add_development_dependency(%q<sqlite3>, [">= 0"])
-      s.add_development_dependency(%q<mysql2>, ["~> 0.3.11"])
+      s.add_development_dependency(%q<mysql2>, [">= 0.3.11"])
     else
-      s.add_dependency(%q<rails>, [">= 0"])
       s.add_dependency(%q<nokogiri>, [">= 1.5.5"])
       s.add_dependency(%q<mechanize>, [">= 2.5"])
       s.add_dependency(%q<multi_xml>, [">= 0.5"])
       s.add_dependency(%q<activerecord-import>, [">= 0"])
       s.add_dependency(%q<curb>, [">= 0"])
+      s.add_dependency(%q<rails>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
       s.add_dependency(%q<rspec>, [">= 0"])
       s.add_dependency(%q<sqlite3>, [">= 0"])
-      s.add_dependency(%q<mysql2>, ["~> 0.3.11"])
+      s.add_dependency(%q<mysql2>, [">= 0.3.11"])
     end
   else
-    s.add_dependency(%q<rails>, [">= 0"])
     s.add_dependency(%q<nokogiri>, [">= 1.5.5"])
     s.add_dependency(%q<mechanize>, [">= 2.5"])
     s.add_dependency(%q<multi_xml>, [">= 0.5"])
     s.add_dependency(%q<activerecord-import>, [">= 0"])
     s.add_dependency(%q<curb>, [">= 0"])
+    s.add_dependency(%q<rails>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
     s.add_dependency(%q<rspec>, [">= 0"])
     s.add_dependency(%q<sqlite3>, [">= 0"])
-    s.add_dependency(%q<mysql2>, ["~> 0.3.11"])
+    s.add_dependency(%q<mysql2>, [">= 0.3.11"])
   end
 end
 
