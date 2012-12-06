@@ -131,18 +131,24 @@ module HttpUtilities
         end
 
         def set_form_field(form, key, value)
-          if (value[:type].eql?(:input))
+          type          =   value.fetch(:type, :input)
+          identifier    =   value.fetch(:identifier, :name)
+          
+          if (type.eql?(:input))
             log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting form field #{key} to value #{value[:value]}.")
-            form.has_field?(key.to_s) ? form.field_with(:name => key.to_s).value = value[:value].to_s : set_form_fields(form, value[:fallbacks])
-          elsif (value[:type].eql?(:checkbox))
+            form.has_field?(key.to_s) ? form.field_with(identifier => key.to_s).value = value[:value].to_s : set_form_fields(form, value[:fallbacks])
+          
+          elsif (type.eql?(:checkbox))
             log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting #{key} to checked: #{value[:checked]}.")
-            status = form.checkbox_with(:name => key.to_s).checked = value[:checked]
-          elsif (value[:type].eql?(:radiobutton))
+            status = form.checkbox_with(identifier => key.to_s).checked = value[:checked]
+          
+          elsif (type.eql?(:radiobutton))
             log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting #{key} to checked: #{value[:checked]}.")
-            status = form.radiobutton_with(:name => key.to_s).checked = value[:checked]
-          elsif (value[:type].eql?(:file_upload))
+            status = form.radiobutton_with(identifier => key.to_s).checked = value[:checked]
+          
+          elsif (type.eql?(:file_upload))
             log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting file upload #{key} to value #{value[:value]}.")
-            status = form.file_upload_with(:name => key.to_s).file_name = value[:value].to_s
+            status = form.file_upload_with(identifier => key.to_s).file_name = value[:value].to_s
           end
 
           return form
