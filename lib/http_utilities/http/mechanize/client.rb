@@ -22,7 +22,11 @@ module HttpUtilities
         end
         
         def init_agent(options = {})
-          self.agent = ::Mechanize.new
+          verbose                   =   options.fetch(:verbose, false)
+          logger                    =   options.fetch(:logger, STDOUT)
+          
+          self.agent                =   ::Mechanize.new
+          self.agent.log            =   ::Logger.new(logger) if (verbose)
           
           self.set_proxy_options(options)
           self.agent.set_proxy(self.proxy[:host], self.proxy[:port], self.proxy[:username], self.proxy[:password]) if (self.proxy[:host] && self.proxy[:port])
