@@ -139,20 +139,24 @@ module HttpUtilities
           identifier    =   value.fetch(:identifier, :name)
           
           if (type.eql?(:input))
-            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting form field #{key} to value #{value[:value]}.")
+            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting text field #{key} to value #{value[:value]}.")
             form.has_field?(key.to_s) ? form.field_with(identifier => key.to_s).value = value[:value].to_s : set_form_fields(form, value[:fallbacks])
           
           elsif (type.eql?(:checkbox))
-            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting #{key} to checked: #{value[:checked]}.")
-            status = form.checkbox_with(identifier => key.to_s).checked = value[:checked]
+            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting checkbox #{key} to checked: #{value[:checked]}.")
+            form.checkbox_with(identifier => key.to_s).checked        =   value[:checked]
           
           elsif (type.eql?(:radiobutton))
-            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting #{key} to checked: #{value[:checked]}.")
-            status = form.radiobutton_with(identifier => key.to_s).checked = value[:checked]
+            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting radio button #{key} to checked: #{value[:checked]}.")
+            form.radiobutton_with(identifier => key.to_s).checked     =   value[:checked]
+          
+          elsif (type.eql?(:select))
+            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting select/dropdown #{key} to value: #{value[:value]}.")
+            form.field_with(identifier => key.to_s).value             =   value[:value].to_s
           
           elsif (type.eql?(:file_upload))
             log(:info, "[HttpUtilities::Http::Mechanize::Client] - Setting file upload #{key} to value #{value[:value]}.")
-            status = form.file_upload_with(identifier => key.to_s).file_name = value[:value].to_s
+            form.file_upload_with(identifier => key.to_s).file_name   =   value[:value].to_s
           end
 
           return form
