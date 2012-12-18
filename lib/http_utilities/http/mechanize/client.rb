@@ -72,26 +72,34 @@ module HttpUtilities
         end
         
         def get_page(url_or_page, options = {})
-          page      =   nil
+          page        =   nil
           
           if (url_or_page.is_a?(String))
-            page    =   open_url(url_or_page, options)
+            page      =   open_url(url_or_page, options)
           else
-            page    =   url_or_page
+            page      =   url_or_page
           end
           
-          page      =   (page && page.is_a?(::Mechanize::Page)) ? page : nil #Occasionally proxies will yield Mechanize::File instead of a proper page
+          page        =   (page && page.is_a?(::Mechanize::Page)) ? page : nil #Occasionally proxies will yield Mechanize::File instead of a proper page
           
           return page
         end
         
-        def get_form(page, form_identifier = {})
-          form      =   nil
+        def get_form(url_or_page, form_identifier = {})
+          form        =   nil
           
-          if (form_identifier.has_key?(:array) && form_identifier.has_key?(:index))
-            form    =   page.forms[form_identifier[:index]]
-          else
-            form    =   page.form_with(form_identifier)
+          if (url_or_page.is_a?(String))
+            page      =   get_page(url_or_page, options)
+          elsif (page.is_a?(::Mechanize::Page))
+            page      =   url_or_page
+          end
+          
+          if (page)
+            if (form_identifier.has_key?(:array) && form_identifier.has_key?(:index))
+              form    =   page.forms[form_identifier[:index]]
+            else
+              form    =   page.form_with(form_identifier)
+            end
           end
           
           return form
