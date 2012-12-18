@@ -85,12 +85,13 @@ module HttpUtilities
           return page
         end
         
-        def get_form(url_or_page, form_identifier = {})
+        def get_form(url_or_page, form_identifier = {}, options = {})
+          page        =   nil
           form        =   nil
           
           if (url_or_page.is_a?(String))
             page      =   get_page(url_or_page, options)
-          elsif (page.is_a?(::Mechanize::Page))
+          else
             page      =   url_or_page
           end
           
