@@ -70,32 +70,49 @@ module HttpUtilities
 
           return page
         end
+        
+        def get_page(url_or_page)
+          page      =   nil
+          
+          if (url_or_page.is_a?(String))
+            page    =   open_url(url_or_page, options)
+          else
+            page    =   url_or_page
+          end
+          
+          page      =   (page && page.is_a?(::Mechanize::Page)) ? page : nil #Occasionally proxies will yield Mechanize::File instead of a proper page
+          
+          return page
+        end
+        
+        def get_form(page, form_identifier = {})
+          form      =   nil
+          
+          if (form_identifier.has_key?(:array) && form_identifier.has_key?(:index))
+            form    =   page.forms[form_identifier[:index]]
+          else
+            form    =   page.form_with(form_identifier)
+          end
+          
+          return form
+        end
 
         def set_form_and_submit(url_or_page, form_identifier = {}, submit_identifier = :first, fields = {}, options = {}, retries = 3)
           should_reset_radio_buttons  =   options.fetch(:should_reset_radio_buttons, false)
-          page, response_page, form   =   nil, nil, nil
+          page                        =   get_page(url_or_page)
+          response_page, form         =   nil, nil
 
-          if (url_or_page.is_a?(String))
-            page        =   open_url(url_or_page, options)
-          else
-            page        =   url_or_page
-          end
-
-          if (page && page.is_a?(::Mechanize::Page)) #Occasionally proxies will yield Mechanize::File instead of a proper page
-            if (form_identifier.has_key?(:array) && form_identifier.has_key?(:index))
-              form = page.forms[form_identifier[:index]]
-            else
-              form = page.form_with(form_identifier)
-            end
+          if (page) 
+            form                      =     get_form(page, form_identifier)
 
             if (form)
-              form.action     =     "#{url_or_page}#{form.action}"  if (url_or_page.is_a?(String) && form.action.starts_with?("#"))
-              form            =     reset_radio_buttons(form)       if (should_reset_radio_buttons)
-              form            =     set_form_fields(form, fields)
-              button          =     (submit_identifier.nil? || submit_identifier.eql?(:first)) ? form.buttons.first : form.button_with(submit_identifier)
+              form.action             =     "#{url_or_page}#{form.action}"  if (url_or_page.is_a?(String) && form.action.starts_with?("#"))
+              form                    =     reset_radio_buttons(form)       if (should_reset_radio_buttons)
+              form                    =     set_form_fields(form, fields)
+              button                  =     (submit_identifier.nil? || submit_identifier.eql?(:first)) ? form.buttons.first : form.button_with(submit_identifier)
 
               begin
-                response_page = self.agent.submit(form, button)
+                response_page         =     form.submit(button)
               rescue Exception => e
                 log(:error, "[HttpUtilities::Http::Mechanize::Client] - Failed to submit form. Error: #{e.class.name} - #{e.message}.")
               end
