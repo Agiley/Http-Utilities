@@ -71,7 +71,7 @@ module HttpUtilities
           return page
         end
         
-        def get_page(url_or_page)
+        def get_page(url_or_page, options = {})
           page      =   nil
           
           if (url_or_page.is_a?(String))
@@ -99,30 +99,24 @@ module HttpUtilities
 
         def set_form_and_submit(url_or_page, form_identifier = {}, submit_identifier = :first, fields = {}, options = {}, retries = 3)
           should_reset_radio_buttons  =   options.fetch(:should_reset_radio_buttons, false)
-          page                        =   get_page(url_or_page)
-          response_page, form         =   nil, nil
+          page                        =   get_page(url_or_page, options)
+          form                        =   page ? get_form(page, form_identifier) : nil
+          response_page               =   nil
 
-          if (page) 
-            form                      =     get_form(page, form_identifier)
+          if (form)
+            form.action               =     "#{url_or_page}#{form.action}"  if (url_or_page.is_a?(String) && form.action.starts_with?("#"))
+            form                      =     reset_radio_buttons(form)       if (should_reset_radio_buttons)
+            form                      =     set_form_fields(form, fields)
+            button                    =     (submit_identifier.nil? || submit_identifier.eql?(:first)) ? form.buttons.first : form.button_with(submit_identifier)
 
-            if (form)
-              form.action             =     "#{url_or_page}#{form.action}"  if (url_or_page.is_a?(String) && form.action.starts_with?("#"))
-              form                    =     reset_radio_buttons(form)       if (should_reset_radio_buttons)
-              form                    =     set_form_fields(form, fields)
-              button                  =     (submit_identifier.nil? || submit_identifier.eql?(:first)) ? form.buttons.first : form.button_with(submit_identifier)
-
-              begin
-                response_page         =     form.submit(button)
-              rescue Exception => e
-                log(:error, "[HttpUtilities::Http::Mechanize::Client] - Failed to submit form. Error: #{e.class.name} - #{e.message}.")
-              end
-
-            else
-              log(:info, "[HttpUtilities::Http::Mechanize::Client] - Couldn't find form with identifier #{form_identifier.inspect}")
+            begin
+              response_page           =     form.submit(button)
+            rescue Exception => e
+              log(:error, "[HttpUtilities::Http::Mechanize::Client] - Failed to submit form. Error: #{e.class.name} - #{e.message}.")
             end
 
-          elsif ((!page || !page.is_a?(::Mechanize::Page)) && retries > 0)
-            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Couldn't find page or it wasn't a page.")
+          elsif (!form && retries > 0)
+            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Couldn't find page or form with identifier #{form_identifier.inspect}")
             retries -= 1
             reset_agent(options)
             set_form_and_submit(url_or_page, form_identifier, submit_identifier, fields, options, retries)
