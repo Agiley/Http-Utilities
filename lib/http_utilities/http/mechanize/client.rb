@@ -86,20 +86,16 @@ module HttpUtilities
         end
         
         def get_form(url_or_page, form_identifier = {}, options = {})
-          page        =   nil
           form        =   nil
-          
-          if (url_or_page.is_a?(String))
-            page      =   get_page(url_or_page, options)
-          else
-            page      =   url_or_page
-          end
+          index       =   form_identifier.delete(:index) { |el| 0 }
+          page        =   (url_or_page.is_a?(String)) ? get_page(url_or_page, options) : url_or_page
           
           if (page)
-            if (form_identifier.has_key?(:array) && form_identifier.has_key?(:index))
-              form    =   page.forms[form_identifier[:index]]
+            if (form_identifier.empty?)
+              form    =   page.forms[index]
             else
-              form    =   page.form_with(form_identifier)
+              forms   =   page.forms_with(form_identifier)
+              form    =   (forms && forms.any?) ? forms[index] : nil
             end
           end
           
