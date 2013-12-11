@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 module HttpUtilities
+  VERSION = "1.0.0"
+  
   require File.join(File.dirname(__FILE__), 'http_utilities/railtie') if defined?(Rails)
 
   require File.join(File.dirname(__FILE__), 'http_utilities/http/proxy_support')
