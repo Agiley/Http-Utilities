@@ -4,6 +4,7 @@ require 'net/http'
 require 'uri'
 require 'cgi'
 require 'mechanize'
+require 'logger'
 
 module HttpUtilities
   module Http
