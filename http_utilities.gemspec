@@ -6,7 +6,6 @@ Gem::Specification.new do |s|
   s.version = "1.0.2"
 
   s.authors = ["Sebastian Johnsson"]
-  s.date = "2012-11-22"
   s.description = "Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)"
 
   s.homepage = "http://github.com/Agiley/http_utilities"
