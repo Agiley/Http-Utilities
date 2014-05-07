@@ -35,13 +35,15 @@ module HttpUtilities
             self.proxy            =   specific_proxy
 
           elsif (proxy_model_defined?)
-            proxy_object = Proxy.get_random_proxy(self.proxy[:protocol], self.proxy[:type])
+            proxy_object          =   Proxy.get_random_proxy(self.proxy[:protocol], self.proxy[:type])
             
             #log(:info, "[HttpUtilities::Http::ProxySupport] - Randomized Proxy object: #{proxy_object.inspect}")
 
             if (proxy_object)
               self.proxy[:host]   =   proxy_object.host
               self.proxy[:port]   =   proxy_object.port
+              proxy_username      =   proxy_object.username.present? ? proxy_object.username : nil
+              proxy_password      =   proxy_object.password.present? ? proxy_object.password : nil
             end
           end
         end
@@ -52,20 +54,20 @@ module HttpUtilities
       def set_proxy_credentials(proxy_username, proxy_password, proxy_credentials)
         if (self.using_proxy? && (!self.proxy[:username] || !self.proxy[:password]))
           if (proxy_username && proxy_password)
-            self.proxy[:username] = proxy_username
-            self.proxy[:password] = proxy_password
+            self.proxy[:username]       =   proxy_username
+            self.proxy[:password]       =   proxy_password
 
           elsif (proxy_credentials)
             if (proxy_credentials.is_a?(Hash))
-              self.proxy[:username] = proxy_credentials[:username]
-              self.proxy[:password] = proxy_credentials[:password]
+              self.proxy[:username]     =   proxy_credentials[:username]
+              self.proxy[:password]     =   proxy_credentials[:password]
 
             elsif (proxy_credentials.is_a?(String))
               parts = proxy_credentials.split(":")
 
               if (parts && parts.any? && parts.size >= 2)
-                self.proxy[:username] = parts.first
-                self.proxy[:password] = parts.second
+                self.proxy[:username]   =   parts.first
+                self.proxy[:password]   =   parts.second
               end
             end
           end
