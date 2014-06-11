@@ -78,14 +78,14 @@ describe Proxy do
     
     [:http, :socks].each do |protocol|
       it "should return #{protocol.to_s} proxies that should be checked" do
-        proxies = Proxy.should_be_checked(protocol)
+        proxies = Proxy.should_be_checked(protocol: protocol)
         proxies.should_not be_nil
         proxies.size.should == 3
       end
       
       [:public, :shared, :private].each do |proxy_type|
         it "should return #{proxy_type.to_s} #{protocol.to_s} proxies that should be checked" do
-          proxies = Proxy.should_be_checked(protocol, proxy_type)
+          proxies = Proxy.should_be_checked(protocol: protocol, proxy_type: proxy_type)
           proxies.should_not be_nil
           proxies.size.should == 1
         end
@@ -94,14 +94,14 @@ describe Proxy do
     
     [:http, :socks].each do |protocol|
       it "should return a random #{protocol.to_s} proxy" do
-        random_proxy = Proxy.get_random_proxy(protocol)
+        random_proxy = Proxy.get_random_proxy(protocol: protocol)
         random_proxy.should_not be_nil
         random_proxy.protocol.should == protocol.to_s
       end
       
       [:public, :shared, :private].each do |proxy_type|
         it "should return a random #{proxy_type.to_s} #{protocol.to_s} proxy" do
-          random_proxy = Proxy.get_random_proxy(protocol, proxy_type)
+          random_proxy = Proxy.get_random_proxy(protocol: protocol, proxy_type: proxy_type)
           random_proxy.should_not be_nil
           random_proxy.protocol.should == protocol.to_s
           random_proxy.proxy_type.should == proxy_type.to_s

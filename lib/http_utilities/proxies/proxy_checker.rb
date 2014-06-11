@@ -19,13 +19,19 @@ module HttpUtilities
         self.maximum_failed_attempts      =   10
       end
 
-      def check_and_update_proxies(protocol = :all, proxy_type = :all, mode = :synchronous)
-        check_proxies(protocol, proxy_type, mode)
+      def check_and_update_proxies(protocol: :all, proxy_type: :all, mode: :synchronous, maximum_failed_attempts: self.maximum_failed_attempts)
+        check_proxies(protocol: protocol, proxy_type: proxy_type, mode: mode, maximum_failed_attempts: maximum_failed_attempts)
         update_proxies
       end
 
-      def check_proxies(protocol = :all, proxy_type = :all, mode = :synchronous)
-        proxies = Proxy.should_be_checked(protocol, proxy_type, Time.now, self.limit)
+      def check_proxies(protocol: :all, proxy_type: :all, mode: :synchronous, maximum_failed_attempts: self.maximum_failed_attempts)
+        proxies                           =   Proxy.should_be_checked(
+          protocol:                 protocol,
+          proxy_type:               proxy_type,
+          date:                     Time.now,
+          limit:                    self.limit,
+          maximum_failed_attempts:  maximum_failed_attempts
+        )
 
         if (proxies && proxies.any?)
           Rails.logger.info "Found #{proxies.size} #{proxy_type} proxies to check."
@@ -61,6 +67,9 @@ module HttpUtilities
   
           client.write("#{test_query}\r\n")
           response      =   client.read
+          
+          puts "SOCKS RESPONSE:\n"
+          puts response
           
           valid_proxy   =   (response && response.present?)
         
