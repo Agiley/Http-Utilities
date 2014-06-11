@@ -1,8 +1,9 @@
 source "http://rubygems.org"
 
-gem "nokogiri", ">= 1.5.5"
-gem "mechanize", ">= 2.5"
-gem "multi_xml", ">= 0.5"
+gem "nokogiri",   ">= 1.5.5"
+gem "mechanize",  ">= 2.5"
+gem "multi_xml",  ">= 0.5"
+gem "net-ssh",    ">= 2.8"
 
 gem "activerecord-import", :require => false
 

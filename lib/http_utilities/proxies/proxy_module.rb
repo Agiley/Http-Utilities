@@ -63,6 +63,18 @@ module HttpUtilities
         def proxy_credentials
           return ::Proxy.format_proxy_credentials(self.username, self.password)
         end
+        
+        def socks_proxy_credentials
+          credentials     =   {}
+          
+          if (!self.username.empty? && !self.password.empty?)
+            credentials   =   {user: self.username, password: self.password}
+          elsif (!self.username.empty? && self.password.empty?)
+            credentials   =   {user: self.username}
+          end
+          
+          return credentials
+        end
       end
       
     end

@@ -1,9 +1,12 @@
 # -*- encoding : utf-8 -*-
 
+require 'socket'
+require 'net/ssh/proxy/socks5'
+require 'activerecord-import'
+
 module HttpUtilities
   module Proxies
     class ProxyChecker
-      require 'activerecord-import'
       attr_accessor :client, :processed_proxies
       attr_accessor :limit, :minimum_successful_attempts, :maximum_failed_attempts
 
@@ -43,20 +46,52 @@ module HttpUtilities
         end
       end
       
-      def check_proxy(proxy, timeout = 60)
+      def check_proxy(proxy)
+        Rails.logger.info "#{Time.now}: Will check if proxy #{proxy.proxy_address} is working."
+        
+        self.send("check_#{proxy.protocol}_proxy")
+      end
+      
+      def check_socks_proxy(proxy, test_host: "whois.verisign-grs.com", test_port: 43, test_query: "=google.com")
+        valid_proxy     =   false
+
+        begin
+          socks_proxy   =   Net::SSH::Proxy::SOCKS5.new(proxy.host, proxy.port, proxy.socks_proxy_credentials)
+          client        =   socks_proxy.open(test_host, test_port)
+  
+          client.write("#{test_query}\r\n")
+          response      =   client.read
+          
+          valid_proxy   =   (response && response.present?)
+        
+        rescue StandardError => e
+          Rails.logger.error "Exception occured while trying to check proxy #{proxy.proxy_address}. Error Class: #{e.class}. Error Message: #{e.message}"
+          valid_proxy   =   false
+        end
+        
+        if (valid_proxy)
+          Rails.logger.info "#{Time.now}: Proxy #{proxy.proxy_address} is working!"
+        else
+          Rails.logger.info "#{Time.now}: Proxy #{proxy.proxy_address} is not working!"
+        end
+
+        self.processed_proxies << {proxy: proxy, valid: valid_proxy}
+      end
+      
+      def check_http_proxy(proxy, timeout = 60)
         document      =   nil
         valid_proxy   =   false
 
-        options = {:method              =>  :net_http,
-                   :use_proxy           =>  true, 
-                   :proxy               =>  proxy.proxy_address, 
-                   :proxy_protocol      =>  proxy.protocol,
-                   :timeout             =>  timeout,
-                   :maximum_redirects   =>  1,
-                   :disable_auth        =>  true
+        options = {method:             :net_http,
+                   use_proxy:          true, 
+                   proxy:              proxy.proxy_address, 
+                   proxy_protocol:     proxy.protocol,
+                   timeout:            timeout,
+                   maximum_redirects:  1,
+                   disable_auth:       true
                   }
 
-        Rails.logger.info "#{Time.now}: Fetching Proxy #{proxy.proxy_address}."
+        Rails.logger.info "#{Time.now}: Fetching Google.com with proxy #{proxy.proxy_address}."
 
         response            =   self.client.retrieve_parsed_html("http://www.google.com/webhp?hl=en", options)
 
@@ -73,7 +108,7 @@ module HttpUtilities
               Rails.logger.info "Title is: #{title}. Proxy #{proxy.proxy_address}"
               
             rescue Exception => e
-              Rails.logger.error "Exception occured while trying to validate proxy. Error Class: #{e.class}. Error Message: #{e.message}"
+              Rails.logger.error "Exception occured while trying to check proxy #{proxy.proxy_address}. Error Class: #{e.class}. Error Message: #{e.message}"
               valid_proxy   =   false
             end
           end
@@ -85,10 +120,10 @@ module HttpUtilities
           Rails.logger.info "#{Time.now}: Proxy #{proxy.proxy_address} is not working!"
         end
 
-        self.processed_proxies << {:proxy => proxy, :valid => valid_proxy}
+        self.processed_proxies << {proxy: proxy, valid: valid_proxy}
       end
 
-      def update_proxies()
+      def update_proxies
         columns   =   [:host, :port, :last_checked_at, :valid_proxy, :successful_attempts, :failed_attempts]
         values    =   []
 

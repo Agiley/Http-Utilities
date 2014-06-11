@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.add_dependency(%q<nokogiri>, [">= 1.5.5"])
   s.add_dependency(%q<mechanize>, [">= 2.5"])
   s.add_dependency(%q<multi_xml>, [">= 0.5"])
+  s.add_dependency(%q<net-ssh>, [">= 2.8"])
   s.add_dependency(%q<activerecord-import>, [">= 0"])
   
   s.add_development_dependency(%q<rails>, [">= 0"])
