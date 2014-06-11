@@ -68,9 +68,6 @@ module HttpUtilities
           client.write("#{test_query}\r\n")
           response      =   client.read
           
-          puts "SOCKS RESPONSE:\n"
-          puts response
-          
           valid_proxy   =   (response && response.present?)
         
         rescue StandardError => e
