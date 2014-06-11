@@ -49,7 +49,7 @@ module HttpUtilities
       def check_proxy(proxy)
         Rails.logger.info "#{Time.now}: Will check if proxy #{proxy.proxy_address} is working."
         
-        self.send("check_#{proxy.protocol}_proxy")
+        self.send("check_#{proxy.protocol}_proxy", proxy)
       end
       
       def check_socks_proxy(proxy, test_host: "whois.verisign-grs.com", test_port: 43, test_query: "=google.com")
