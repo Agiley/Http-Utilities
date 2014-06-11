@@ -6,7 +6,7 @@ module HttpUtilities
           @queue = :proxies
 
           def self.perform(proxy_id)
-            proxy_object = ::Proxy.where(:id => proxy_id).first
+            proxy_object = ::Proxy.where(id: proxy_id).first
 
             if (proxy_object)
               checker = HttpUtilities::Proxies::ProxyChecker.new

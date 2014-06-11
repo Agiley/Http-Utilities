@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 module HttpUtilities
-  VERSION = "1.0.7.1"
+  VERSION = "1.0.8"
   
   require File.join(File.dirname(__FILE__), 'http_utilities/railtie') if defined?(Rails)
 
@@ -28,16 +28,16 @@ module HttpUtilities
     require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_module')
     require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_checker')
     require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_seeder')
-
-    if defined?(Resque)
-      require File.join(File.dirname(__FILE__), 'http_utilities/jobs/resque/proxies/check_proxies_job')
-      require File.join(File.dirname(__FILE__), 'http_utilities/jobs/resque/proxies/check_proxy_job')
-    end
-    
-    if defined?(Sidekiq)
-      require File.join(File.dirname(__FILE__), 'http_utilities/jobs/sidekiq/proxies/check_proxies_job')
-      require File.join(File.dirname(__FILE__), 'http_utilities/jobs/sidekiq/proxies/check_proxy_job')
-    end
+  end
+  
+  if defined?(Resque)
+    require File.join(File.dirname(__FILE__), 'http_utilities/jobs/resque/proxies/check_proxies_job')
+    require File.join(File.dirname(__FILE__), 'http_utilities/jobs/resque/proxies/check_proxy_job')
+  end
+  
+  if defined?(Sidekiq)
+    require File.join(File.dirname(__FILE__), 'http_utilities/jobs/sidekiq/proxies/check_proxies_job')
+    require File.join(File.dirname(__FILE__), 'http_utilities/jobs/sidekiq/proxies/check_proxy_job')
   end
 
   if defined?(MultiXml)

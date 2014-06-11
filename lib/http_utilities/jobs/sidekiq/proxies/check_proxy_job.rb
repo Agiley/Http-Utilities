@@ -7,10 +7,10 @@ module HttpUtilities
           sidekiq_options :queue    =>  :proxies
 
           def perform(proxy_id)
-            proxy_object = ::Proxy.where(:id => proxy_id).first
+            proxy_object  =   ::Proxy.where(id: proxy_id).first
 
             if (proxy_object)
-              checker = HttpUtilities::Proxies::ProxyChecker.new
+              checker     =   HttpUtilities::Proxies::ProxyChecker.new
               checker.check_proxy(proxy_object)
               checker.update_proxies
             end

@@ -6,7 +6,7 @@ module HttpUtilities
           @queue = :proxies
 
           def perform(protocol = :all, proxy_type = :all, mode = :synchronous)
-            HttpUtilities::Proxies::ProxyChecker.new.check_proxies(protocol.to_sym, proxy_type.to_sym, mode.to_sym)
+            HttpUtilities::Proxies::ProxyChecker.new.check_proxies(protocol: protocol.to_sym, proxy_type: proxy_type.to_sym, mode: mode.to_sym)
           end
         end
       end
