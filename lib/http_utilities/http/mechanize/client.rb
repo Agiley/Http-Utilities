@@ -124,7 +124,6 @@ module HttpUtilities
           elsif (!form && retries > 0)
             log(:info, "[HttpUtilities::Http::Mechanize::Client] - Couldn't find page or form with identifier #{form_identifier.inspect}")
             retries -= 1
-            reset_agent(options)
             set_form_and_submit(url_or_page, form_identifier, submit_identifier, fields, options, retries)
           end
 
