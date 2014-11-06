@@ -35,9 +35,14 @@ module HttpUtilities
         end
 
         def set_net_http_options(uri, options = {})
-          request             =   HttpUtilities::Http::Request.new
+          request                         =   HttpUtilities::Http::Request.new
           request.set_proxy_options(options)
-          request.interface   =   Net::HTTP.new(uri.host, uri.port, request.proxy[:host], request.proxy[:port])
+          
+          request.interface               =   Net::HTTP.new(uri.host, uri.port, request.proxy[:host], request.proxy[:port])
+          
+          use_ssl                         =   options.fetch(:use_ssl, false)
+          request.interface.use_ssl       =   use_ssl
+          request.interface.verify_mode   =   OpenSSL::SSL::VERIFY_NONE if use_ssl
 
           return request
         end
