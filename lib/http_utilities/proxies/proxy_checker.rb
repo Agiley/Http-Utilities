@@ -11,7 +11,9 @@ module HttpUtilities
       attr_accessor :limit, :minimum_successful_attempts, :maximum_failed_attempts
 
       def initialize
-        self.client                       =   HttpUtilities::Http::Client.new
+        self.client                       =   HttpUtilities::Http::Mechanize::Client.new(verbose: false)
+        self.client.agent.agent.http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        
         self.processed_proxies            =   []
         
         self.limit                        =   1000
@@ -88,26 +90,25 @@ module HttpUtilities
         document      =   nil
         valid_proxy   =   false
 
-        options = {method:             :net_http,
-                   use_proxy:          true, 
-                   proxy:              proxy.proxy_address, 
-                   proxy_protocol:     proxy.protocol,
-                   timeout:            timeout,
-                   maximum_redirects:  1,
-                   disable_auth:       true
-                  }
+        options       =   {
+                            use_proxy:       true,
+                            proxy:           proxy.proxy_address, 
+                            proxy_protocol:  proxy.protocol,
+                            timeout:         timeout,
+                          }
 
         Rails.logger.info "#{Time.now}: Fetching Google.com with proxy #{proxy.proxy_address}."
-
-        response            =   self.client.retrieve_parsed_html("http://www.google.com/webhp?hl=en", options)
-
-        if (response && response.parsed_body)
-          title             =   response.parsed_body.css("title").first
+        
+        page                =   self.client.get_page("https://www.google.com/webhp?hl=en&gws_rd=ssl", options)
+        
+        if (page)
+          parser            =   self.client.get_parser(page)
+          title             =   parser.at_css("head title")
 
           if (title && title.content)
             begin
               title         =   title.content.encode("UTF-8").strip.downcase
-              body_content  =   response.parsed_body.content.to_s.encode("UTF-8").strip.downcase
+              body_content  =   page.body.to_s.encode("UTF-8").strip.downcase
               
               valid_proxy   =   (title.eql?("google") || !(body_content =~ /google home/i).nil?)
               
