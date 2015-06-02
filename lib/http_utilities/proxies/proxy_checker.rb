@@ -85,7 +85,7 @@ module HttpUtilities
         self.processed_proxies << {proxy: proxy, valid: valid_proxy}
       end
       
-      def check_http_proxy(proxy, test_url: "http://www.google.com/robots.txt", timeout: 30)
+      def check_http_proxy(proxy, test_url: "http://www.google.com/robots.txt", timeout: 10)
         options       =   {
                             use_proxy:       true,
                             proxy:           {host: proxy.host, port: proxy.port}, 
