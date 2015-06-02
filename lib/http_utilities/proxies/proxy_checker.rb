@@ -85,43 +85,21 @@ module HttpUtilities
         self.processed_proxies << {proxy: proxy, valid: valid_proxy}
       end
       
-      def check_http_proxy(proxy, test_url: "https://www.google.com/webhp?hl=en&gws_rd=ssl", timeout: 60)
-        document      =   nil
-        valid_proxy   =   false
-
+      def check_http_proxy(proxy, test_url: "http://www.google.com/robots.txt", timeout: 30)
         options       =   {
                             use_proxy:       true,
                             proxy:           {host: proxy.host, port: proxy.port}, 
                             proxy_protocol:  proxy.protocol,
-                            timeout:         timeout,
-                            format:          :html
+                            timeout:         timeout
                           }
         
         options.merge!(proxy_username: proxy.username) if proxy.username && proxy.username.present?
         options.merge!(proxy_password: proxy.password) if proxy.password && proxy.password.present?
 
-        Rails.logger.info "#{Time.now}: Fetching Google.com with proxy #{proxy.proxy_address}."
+        Rails.logger.info "#{Time.now}: Fetching robots.txt for Google.com with proxy #{proxy.proxy_address}. Using authentication? #{options.has_key?(:proxy_username).to_s}"
         
-        response            =   self.client.get(test_url, options)
-        
-        if (page)
-          title             =   response.parsed_body.at_css("head title")
-
-          if (title && title.content)
-            begin
-              title         =   title.content.encode("UTF-8").strip.downcase
-              body_content  =   response.body.to_s.encode("UTF-8").strip.downcase
-              
-              valid_proxy   =   (title.eql?("google") || !(body_content =~ /google home/i).nil?)
-              
-              Rails.logger.info "Title is: #{title}. Proxy #{proxy.proxy_address}"
-              
-            rescue Exception => e
-              Rails.logger.error "Exception occured while trying to check proxy #{proxy.proxy_address}. Error Class: #{e.class}. Error Message: #{e.message}"
-              valid_proxy   =   false
-            end
-          end
-        end
+        response       =   self.client.get(test_url, options: options)
+        valid_proxy    =   (response && response.body && response.body =~ /Allow: \/search\/about/i)
 
         if (valid_proxy)
           Rails.logger.info "#{Time.now}: Proxy #{proxy.proxy_address} is working!"

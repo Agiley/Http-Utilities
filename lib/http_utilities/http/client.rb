@@ -43,8 +43,8 @@ module HttpUtilities
       end
       
       private
-      def build_request(opts = {})
-        options         =   opts.dup
+      def build_request(options = {}, faraday_options = {})
+        options         =   options.dup
         options         =   options.merge(ssl: {:verify => false})
         
         adapter         =   options.delete(:adapter)                { |opt| Faraday.default_adapter }
@@ -56,8 +56,8 @@ module HttpUtilities
         
         proxy_options                       =   request.generate_proxy_options
     
-        connection      =   Faraday.new(options) do |builder|
-          builder.headers[:user_agent]      =   user_agent
+        connection      =   Faraday.new(faraday_options) do |builder|
+          builder.headers[:user_agent]      =   request.user_agent
           builder.options[:timeout]         =   timeout
           builder.options[:open_timeout]    =   open_timeout        
           #builder.response  :logger
