@@ -5,20 +5,13 @@ module HttpUtilities
   require File.join(File.dirname(__FILE__), 'http_utilities/railtie') if defined?(Rails)
 
   require File.join(File.dirname(__FILE__), 'http_utilities/http/proxy_support')
-  require File.join(File.dirname(__FILE__), 'http_utilities/http/cookies')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/user_agent')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/url')
-  require File.join(File.dirname(__FILE__), 'http_utilities/http/format')
-  require File.join(File.dirname(__FILE__), 'http_utilities/http/get')
-  require File.join(File.dirname(__FILE__), 'http_utilities/http/post')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/logger')
 
   require File.join(File.dirname(__FILE__), 'http_utilities/http/request')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/response')
 
-  require File.join(File.dirname(__FILE__), 'http_utilities/http/adapters/net_http')
-  require File.join(File.dirname(__FILE__), 'http_utilities/http/adapters/open_uri')
-  require File.join(File.dirname(__FILE__), 'http_utilities/http/adapters/curb')
 
   require File.join(File.dirname(__FILE__), 'http_utilities/http/client')
 
@@ -39,9 +32,4 @@ module HttpUtilities
     require File.join(File.dirname(__FILE__), 'http_utilities/jobs/sidekiq/proxies/check_proxies_job')
     require File.join(File.dirname(__FILE__), 'http_utilities/jobs/sidekiq/proxies/check_proxy_job')
   end
-
-  if defined?(MultiXml)
-    MultiXml.parser = :nokogiri
-  end
 end
-

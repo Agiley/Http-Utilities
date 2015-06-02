@@ -5,7 +5,7 @@ module HttpUtilities
     module UserAgent
       
       def set_user_agent
-        user_agent        =   (USER_AGENTS && USER_AGENTS.any?) ? USER_AGENTS[rand(USER_AGENTS.size)] : ""
+        user_agent        =   (USER_AGENTS && USER_AGENTS.any?) ? USER_AGENTS.sample : nil
         self.user_agent   =   user_agent if (user_agent && self.respond_to?(:user_agent=))
       end
       

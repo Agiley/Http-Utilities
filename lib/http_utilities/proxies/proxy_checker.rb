@@ -11,9 +11,8 @@ module HttpUtilities
       attr_accessor :limit, :minimum_successful_attempts, :maximum_failed_attempts
 
       def initialize
-        self.client                       =   HttpUtilities::Http::Mechanize::Client.new(verbose: false)
-        self.client.agent.agent.http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-        
+        self.client                       =   HttpUtilities::Http::Client.new
+
         self.processed_proxies            =   []
         
         self.limit                        =   1000
@@ -86,29 +85,32 @@ module HttpUtilities
         self.processed_proxies << {proxy: proxy, valid: valid_proxy}
       end
       
-      def check_http_proxy(proxy, timeout = 60)
+      def check_http_proxy(proxy, test_url: "https://www.google.com/webhp?hl=en&gws_rd=ssl", timeout: 60)
         document      =   nil
         valid_proxy   =   false
 
         options       =   {
                             use_proxy:       true,
-                            proxy:           proxy.proxy_address, 
+                            proxy:           {host: proxy.host, port: proxy.port}, 
                             proxy_protocol:  proxy.protocol,
                             timeout:         timeout,
+                            format:          :html
                           }
+        
+        options.merge!(proxy_username: proxy.username) if proxy.username && proxy.username.present?
+        options.merge!(proxy_password: proxy.password) if proxy.password && proxy.password.present?
 
         Rails.logger.info "#{Time.now}: Fetching Google.com with proxy #{proxy.proxy_address}."
         
-        page                =   self.client.get_page("https://www.google.com/webhp?hl=en&gws_rd=ssl", options)
+        response            =   self.client.get(test_url, options)
         
         if (page)
-          parser            =   self.client.get_parser(page)
-          title             =   parser.at_css("head title")
+          title             =   response.parsed_body.at_css("head title")
 
           if (title && title.content)
             begin
               title         =   title.content.encode("UTF-8").strip.downcase
-              body_content  =   page.body.to_s.encode("UTF-8").strip.downcase
+              body_content  =   response.body.to_s.encode("UTF-8").strip.downcase
               
               valid_proxy   =   (title.eql?("google") || !(body_content =~ /google home/i).nil?)
               

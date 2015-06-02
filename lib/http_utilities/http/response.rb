@@ -1,15 +1,14 @@
 module HttpUtilities
   module Http
     class Response
-      include HttpUtilities::Http::Format
       include HttpUtilities::Http::Logger
 
       attr_accessor :body, :parsed_body, :page, :format, :request, :force_encoding
 
-      def initialize(body = nil, request = nil, options = {})
-        options               =   options.clone()
+      def initialize(response = nil, request = nil, options = {})
+        options               =   options.dup
 
-        self.body             =   body
+        self.body             =   (response && response.body) ? response.body : nil
         self.request          =   request
 
         self.parsed_body      =   nil
@@ -33,6 +32,18 @@ module HttpUtilities
 
       def parse_response
         self.send("as_#{self.format}".to_sym) if (self.body && self.format)
+      end
+      
+      def as_html
+        self.parsed_body = (self.body && self.body != "") ? Nokogiri::HTML(self.body.to_s.force_encoding("utf-8"), nil, "utf-8") : nil
+      end
+
+      def as_xml
+        self.parsed_body = (self.body && self.body != "") ? Nokogiri::XML(self.body.to_s.force_encoding("utf-8"), nil, "utf-8") : nil
+      end
+
+      def as_json
+        self.parsed_body = (self.body && self.body != "") ? self.body.to_s.force_encoding("utf-8").to_json : nil
       end
 
       def set_page(page)

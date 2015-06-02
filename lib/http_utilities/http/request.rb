@@ -5,12 +5,11 @@ module HttpUtilities
       include HttpUtilities::Http::ProxySupport
       include HttpUtilities::Http::UserAgent
       
-      attr_accessor :interface, :proxy, :cookies, :user_agent
+      attr_accessor :interface, :proxy, :user_agent
       
-      def initialize(interface = nil, proxy = {}, cookies = [])
+      def initialize(interface = nil, proxy = {})
         self.interface  =   interface
         self.proxy      =   proxy
-        self.cookies    =   cookies
         
         self.set_user_agent
       end
