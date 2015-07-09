@@ -1,7 +1,6 @@
 module HttpUtilities
   module Proxies
     class ProxySeeder
-      require 'activerecord-import'
       attr_accessor :protocols, :proxy_types, :categories
 
       def initialize
@@ -27,20 +26,23 @@ module HttpUtilities
       end
 
       def bulk_import_proxies(proxy_list, protocol, proxy_type, category)        
-        columns = [:host, :port, :protocol, :proxy_type, :category]
-        category = (category && !category.eql?('unspecified')) ? category : nil
+        columns     =   [:host, :port, :protocol, :proxy_type, :category]
+        category    =   (category && !category.eql?('unspecified')) ? category : nil
 
         begin
-          values = []
-
           proxy_list.slice!(0..1000).each do |proxy|
-            host = proxy[:host]
-            port = proxy[:port]
-            value_arr = [host, port, protocol, proxy_type, category]
-            values << value_arr
+            host              =   proxy[:host]
+            port              =   proxy[:port]
+            
+            proxy             =   ::Proxy.where(host: host, port: port).first || ::Proxy.new
+            proxy.host        =   host
+            proxy.port        =   port
+            proxy.protocol    =   protocol
+            proxy.proxy_type  =   proxy_type
+            proxy.category    =   category
+            proxy.save
           end
-
-          ::Proxy.import(columns, values, :on_duplicate_key_update => [:proxy_type], :validate => false) if (values && values.any?)
+          
         end while (proxy_list && proxy_list.any?)
       end
 
