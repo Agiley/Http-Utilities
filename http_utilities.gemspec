@@ -14,12 +14,12 @@ Gem::Specification.new do |s|
   s.add_dependency(%q<nokogiri>, [">= 1.6"])
   s.add_dependency(%q<mechanize>, [">= 2.7"])
   s.add_dependency(%q<net-ssh>, [">= 2.9"])
-  s.add_dependency(%q<activerecord-import>, [">= 0"])
   
   s.add_development_dependency(%q<rails>, [">= 0"])
   s.add_development_dependency(%q<rspec>, [">= 0"])
   s.add_development_dependency(%q<sqlite3>, [">= 0"])
   s.add_development_dependency(%q<mysql2>, [">= 0"])
+  s.add_development_dependency(%q<activerecord-import>, [">= 0"])
   
   # = MANIFEST =
  s.files = %w[
@@ -49,8 +49,9 @@ Gem::Specification.new do |s|
  lib/http_utilities/jobs/resque/proxies/check_proxy_job.rb
  lib/http_utilities/jobs/sidekiq/proxies/check_proxies_job.rb
  lib/http_utilities/jobs/sidekiq/proxies/check_proxy_job.rb
+ lib/http_utilities/proxies/mysql/proxy_module.rb
+ lib/http_utilities/proxies/mongo/proxy_module.rb
  lib/http_utilities/proxies/proxy_checker.rb
- lib/http_utilities/proxies/proxy_module.rb
  lib/http_utilities/proxies/proxy_seeder.rb
  lib/http_utilities/railtie.rb
  lib/tasks/http_utilities_tasks.rake
