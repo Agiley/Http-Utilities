@@ -2,7 +2,6 @@
 
 require 'socket'
 require 'net/ssh/proxy/socks5'
-require 'activerecord-import'
 
 module HttpUtilities
   module Proxies
