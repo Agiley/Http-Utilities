@@ -15,8 +15,8 @@ module HttpUtilities
     
             proxies     =   proxies.any_of(
               {:last_checked_at.exists => false},
-              {:last_checked_at.in => ["", nil]},
-              {:last_checked_at.exists => true, :last_checked_at.nin => ["", nil], :last_checked_at.lt => date}
+              {:last_checked_at.ne => nil},
+              {:last_checked_at.exists => true, :last_checked_at.ne => nil, :last_checked_at.lt => date}
             )
     
             proxies     =   proxies.any_of(

@@ -21,7 +21,6 @@ module HttpUtilities
 
       def check_and_update_proxies(protocol: :all, proxy_type: :all, mode: :synchronous, maximum_failed_attempts: self.maximum_failed_attempts)
         check_proxies(protocol: protocol, proxy_type: proxy_type, mode: mode, maximum_failed_attempts: maximum_failed_attempts)
-        update_proxies
       end
 
       def check_proxies(protocol: :all, proxy_type: :all, mode: :synchronous, maximum_failed_attempts: self.maximum_failed_attempts)
@@ -75,13 +74,7 @@ module HttpUtilities
           valid_proxy   =   false
         end
         
-        if (valid_proxy)
-          Rails.logger.info "#{Time.now}: Proxy #{proxy.proxy_address} is working!"
-        else
-          Rails.logger.info "#{Time.now}: Proxy #{proxy.proxy_address} is not working!"
-        end
-
-        self.processed_proxies << {proxy: proxy, valid: valid_proxy}
+        update_proxy(proxy, valid_proxy)
       end
       
       def check_http_proxy(proxy, test_url: "http://www.google.com/robots.txt", timeout: 10)
@@ -100,13 +93,7 @@ module HttpUtilities
         response       =   self.client.get(test_url, options: options)
         valid_proxy    =   (response && response.body && response.body =~ /Allow: \/search\/about/i)
 
-        if (valid_proxy)
-          Rails.logger.info "#{Time.now}: Proxy #{proxy.proxy_address} is working!"
-        else
-          Rails.logger.info "#{Time.now}: Proxy #{proxy.proxy_address} is not working!"
-        end
-
-        self.processed_proxies << {proxy: proxy, valid: valid_proxy}
+        update_proxy(proxy, valid_proxy)
       end
       
       def update_proxies
@@ -120,8 +107,10 @@ module HttpUtilities
       end
       
       def update_proxy(proxy, valid)
-        successful_attempts         =   proxy.successful_attempts
-        failed_attempts             =   proxy.failed_attempts
+        Rails.logger.info "#{Time.now}: Proxy #{proxy.proxy_address} is #{valid ? "working" : "not working"}!"
+        
+        successful_attempts         =   proxy.successful_attempts || 0
+        failed_attempts             =   proxy.failed_attempts || 0
 
         if (valid)
           successful_attempts      +=  1
