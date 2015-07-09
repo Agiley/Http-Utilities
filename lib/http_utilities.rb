@@ -12,16 +12,20 @@ module HttpUtilities
   require File.join(File.dirname(__FILE__), 'http_utilities/http/request')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/response')
 
-
   require File.join(File.dirname(__FILE__), 'http_utilities/http/client')
 
   require File.join(File.dirname(__FILE__), 'http_utilities/http/mechanize/client')
 
   if defined?(ActiveRecord)
-    require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_module')
-    require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_checker')
+    require File.join(File.dirname(__FILE__), 'http_utilities/proxies/mysql/proxy_module')
     require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_seeder')
   end
+  
+  if defined?(Mongoid)
+    require File.join(File.dirname(__FILE__), 'http_utilities/proxies/mongo/proxy_module')
+  end
+  
+  require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_checker')
   
   if defined?(Resque)
     require File.join(File.dirname(__FILE__), 'http_utilities/jobs/resque/proxies/check_proxies_job')

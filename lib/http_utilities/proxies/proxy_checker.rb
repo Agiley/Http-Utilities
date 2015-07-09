@@ -109,34 +109,34 @@ module HttpUtilities
 
         self.processed_proxies << {proxy: proxy, valid: valid_proxy}
       end
-
+      
       def update_proxies
-        columns   =   [:host, :port, :last_checked_at, :valid_proxy, :successful_attempts, :failed_attempts]
-        values    =   []
-
         Rails.logger.info "Updating/Importing #{self.processed_proxies.size} proxies"
 
         if (self.processed_proxies && self.processed_proxies.any?)
           self.processed_proxies.each do |value|
-            proxy                 =   value[:proxy]
-            valid                 =   value[:valid]
-            successful_attempts   =   proxy.successful_attempts
-            failed_attempts       =   proxy.failed_attempts
-
-            if (valid)
-              successful_attempts +=  1
-            else
-              failed_attempts     +=  1
-            end
-
-            is_valid              =   (successful_attempts >= self.minimum_successful_attempts && failed_attempts < self.maximum_failed_attempts)
-            value_arr             =   [proxy.host, proxy.port, Time.now, is_valid, successful_attempts, failed_attempts]
-            values                <<  value_arr
+            update_proxy(value[:proxy], value[:valid])
           end
+        end
+      end
+      
+      def update_proxy(proxy, valid)
+        successful_attempts         =   proxy.successful_attempts
+        failed_attempts             =   proxy.failed_attempts
 
-          ::Proxy.import(columns, values, :on_duplicate_key_update => [:last_checked_at, :valid_proxy, :successful_attempts, :failed_attempts], :validate => false)
+        if (valid)
+          successful_attempts      +=  1
+        else
+          failed_attempts          +=  1
         end
 
+        is_valid                    =   (successful_attempts >= self.minimum_successful_attempts && failed_attempts < self.maximum_failed_attempts)
+        
+        proxy.valid_proxy           =   is_valid
+        proxy.successful_attempts   =   successful_attempts
+        proxy.failed_attempts       =   failed_attempts
+        proxy.last_checked_at       =   Time.now
+        proxy.save
       end
 
     end
