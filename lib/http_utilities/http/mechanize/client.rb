@@ -30,7 +30,11 @@ module HttpUtilities
           self.agent.log            =   ::Logger.new(logger) if (verbose)
           
           self.set_proxy_options(options)
-          self.agent.set_proxy(self.proxy[:host], self.proxy[:port], self.proxy[:username], self.proxy[:password]) if (self.proxy[:host] && self.proxy[:port])
+          
+          if (self.proxy[:host] && self.proxy[:port])
+            log(:info, "[HttpUtilities::Http::Mechanize::Client] - Will use proxy #{self.proxy[:host]}:#{self.proxy[:port]} for Mechanize.")
+            self.agent.set_proxy(self.proxy[:host], self.proxy[:port], self.proxy[:username], self.proxy[:password])
+          end
           
           self.set_user_agent
           (self.user_agent) ? self.agent.user_agent = self.user_agent : self.agent.user_agent_alias = 'Mac Safari'
