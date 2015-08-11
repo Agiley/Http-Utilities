@@ -31,13 +31,20 @@ module HttpUtilities
             return proxies
           end
         
-          def get_random_proxy(protocol: :all, proxy_type: :all, maximum_failed_attempts: nil)
+          def get_random_proxy(protocol: :all, proxy_type: :all, maximum_failed_attempts: nil, retries: 3)
             proxies     =   get_proxies_for_protocol_and_proxy_type(protocol, proxy_type)
             proxies     =   proxies.where(valid_proxy: true)
             proxies     =   proxies.where(:failed_attempts.lte => maximum_failed_attempts) if maximum_failed_attempts
-    
-            proxy       =   proxies.skip(rand(proxies.count)).first
-    
+            proxy       =   nil
+            
+            begin
+              proxy     =   proxies.skip(rand(proxies.count)).first
+            
+            rescue StandardError
+              retries  -=   1
+              retry if retries > 0
+            end
+            
             return proxy
           end
         
