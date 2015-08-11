@@ -3,13 +3,13 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 1.3.5") if s.respond_to? :required_rubygems_version=
   
   s.name = "http_utilities"
-  s.version = "1.1.2"
+  s.version = "1.1.5"
 
   s.authors = ["Sebastian Johnsson"]
-  s.description = "Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)"
+  s.description = "Wrapper for Faraday with additional functionality"
 
   s.homepage = "http://github.com/Agiley/http_utilities"
-  s.summary = "Wrapper for common Http Libraries (Net:HTTP/Open URI/Curl)"
+  s.summary = "Wrapper for Faraday with additional functionality"
   
   s.add_dependency(%q<nokogiri>, [">= 1.6"])
   s.add_dependency(%q<mechanize>, [">= 2.7"])
@@ -49,8 +49,8 @@ Gem::Specification.new do |s|
  lib/http_utilities/jobs/resque/proxies/check_proxy_job.rb
  lib/http_utilities/jobs/sidekiq/proxies/check_proxies_job.rb
  lib/http_utilities/jobs/sidekiq/proxies/check_proxy_job.rb
- lib/http_utilities/proxies/mysql/proxy_module.rb
  lib/http_utilities/proxies/mongo/proxy_module.rb
+ lib/http_utilities/proxies/mysql/proxy_module.rb
  lib/http_utilities/proxies/proxy_checker.rb
  lib/http_utilities/proxies/proxy_seeder.rb
  lib/http_utilities/railtie.rb
