@@ -57,12 +57,12 @@ module HttpUtilities
         self.send("check_#{proxy.protocol}_proxy", proxy)
       end
       
-      def check_socks_proxy(proxy, test_host: "whois.verisign-grs.com", test_port: 43, test_query: "=google.com")
+      def check_socks_proxy(proxy, test_host: "whois.verisign-grs.com", test_port: 43, test_query: "=google.com", timeout: 30)
         valid_proxy     =   false
 
         begin
           socks_proxy   =   Net::SSH::Proxy::SOCKS5.new(proxy.host, proxy.port, proxy.socks_proxy_credentials)
-          client        =   socks_proxy.open(test_host, test_port)
+          client        =   socks_proxy.open(test_host, test_port, {timeout: timeout})
   
           client.write("#{test_query}\r\n")
           response      =   client.read
