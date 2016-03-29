@@ -68,6 +68,8 @@ module HttpUtilities
           response      =   client.read
           
           valid_proxy   =   (response && response.present?)
+          
+          client.close
         
         rescue StandardError => e
           Rails.logger.error "Exception occured while trying to check proxy #{proxy.proxy_address}. Error Class: #{e.class}. Error Message: #{e.message}"
