@@ -40,9 +40,9 @@ module HttpUtilities
               when :synchronous
                 check_proxy(proxy)
               when :resque
-                Resque.enqueue(HttpUtilities::Jobs::Resque::Proxies::CheckProxyJob, proxy.id)
+                Resque.enqueue(HttpUtilities::Jobs::Resque::Proxies::CheckProxyJob, proxy.id.to_s)
               when :sidekiq
-                HttpUtilities::Jobs::Sidekiq::Proxies::CheckProxyJob.perform_async(proxy.id)
+                HttpUtilities::Jobs::Sidekiq::Proxies::CheckProxyJob.perform_async(proxy.id.to_s)
             end
           end
 
