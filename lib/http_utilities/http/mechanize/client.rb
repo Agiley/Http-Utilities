@@ -14,7 +14,6 @@ module HttpUtilities
         attr_accessor :agent, :proxy, :user_agent
         
         include HttpUtilities::Http::Logger
-        include HttpUtilities::Http::Url
         include HttpUtilities::Http::ProxySupport
         include HttpUtilities::Http::UserAgent
         
