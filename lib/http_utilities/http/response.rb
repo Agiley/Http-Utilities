@@ -6,22 +6,20 @@ module HttpUtilities
       attr_accessor :body, :parsed_body, :page, :format, :request, :force_encoding
 
       def initialize(response = nil, request = nil, options = {})
-        options               =   options.dup
-
         self.body             =   (response && response.body) ? response.body : nil
         self.request          =   request
 
         self.parsed_body      =   nil
 
-        self.format           =   options.delete(:format) { |e| nil }
-        self.force_encoding   =   options.delete(:force_encoding) { |e| true }
+        self.format           =   options.fetch(:format, nil)
+        self.force_encoding   =   options.fetch(:force_encoding, true)
 
         encode if (self.force_encoding)
         parse_response
       end
 
       def encode
-        if (self.body)
+        if self.body
           begin
             self.body = self.body.force_encoding('UTF-8').encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "")
           rescue Exception => e
@@ -49,9 +47,9 @@ module HttpUtilities
       def set_page(page)
         self.page = page
 
-        if (page && page.parser)
-          self.body         =   page.parser.content
-          self.parsed_body  =   page.parser
+        if (self.page && self.page.parser)
+          self.body         =   self.page.parser.content
+          self.parsed_body  =   self.page.parser
         end
       end
 

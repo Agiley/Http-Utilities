@@ -1,7 +1,4 @@
 # -*- encoding : utf-8 -*-
-require 'open-uri'
-require 'uri'
-require 'cgi'
 
 module HttpUtilities
   module Http
@@ -10,7 +7,7 @@ module HttpUtilities
       
       def get(url, arguments: {}, options: {}, retries: 3)
         response        =   nil
-        request         =   build_request(options)
+        request         =   build_request(options: options)
         
         begin
           response      =   request.interface.get(url, arguments)
@@ -27,7 +24,7 @@ module HttpUtilities
       
       def post(url, data: nil, options: {}, retries: 3)
         response        =   nil
-        request         =   build_request(options)
+        request         =   build_request(options: options)
     
         begin
           response      =   request.interface.post(url, data)
@@ -43,25 +40,33 @@ module HttpUtilities
       end
       
       private
-      def build_request(options = {}, faraday_options = {})
-        options         =   options.dup
-        options         =   options.merge(ssl: {:verify => false})
+      def build_request(options: {}, client_options: {})
+        client_options                      =   client_options.merge(ssl: {verify: false})
         
-        adapter         =   options.delete(:adapter)                { |opt| Faraday.default_adapter }
-        timeout         =   options.delete(:timeout)                { |opt| 60 }
-        open_timeout    =   options.delete(:open_timeout)           { |opt| 60 }
+        adapter                             =   options.fetch(:adapter, Faraday.default_adapter)
+        timeout                             =   options.fetch(:timeout, 60)
+        open_timeout                        =   options.fetch(:open_timeout, 60)
+        content_type                        =   options.fetch(:content_type, nil)
+        response_adapters                   =   options.fetch(:response_adapters, [])
         
         request                             =   HttpUtilities::Http::Request.new
         request.set_proxy_options(options)
         
         proxy_options                       =   request.generate_proxy_options
     
-        connection      =   Faraday.new(faraday_options) do |builder|
+        connection      =   Faraday.new(client_options) do |builder|
           builder.headers[:user_agent]      =   request.user_agent
-          builder.options[:timeout]         =   timeout
-          builder.options[:open_timeout]    =   open_timeout        
-          #builder.response  :logger
+          builder.headers[:content_type]    =   content_type if content_type && !content_type.empty?
+          
+          builder.options[:timeout]         =   timeout if timeout
+          builder.options[:open_timeout]    =   open_timeout if open_timeout
+          
+          response_adapters.each do |response_adapter|
+            builder.send(:response, response_adapter)
+          end if response_adapters && response_adapters.any?
+
           builder.proxy     proxy_options unless proxy_options.empty?
+          
           builder.adapter   adapter
         end
 

@@ -6,7 +6,6 @@ module HttpUtilities
 
   require File.join(File.dirname(__FILE__), 'http_utilities/http/proxy_support')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/user_agent')
-  require File.join(File.dirname(__FILE__), 'http_utilities/http/url')
   require File.join(File.dirname(__FILE__), 'http_utilities/http/logger')
 
   require File.join(File.dirname(__FILE__), 'http_utilities/http/request')

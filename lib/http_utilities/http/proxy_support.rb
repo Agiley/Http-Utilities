@@ -1,6 +1,3 @@
-require 'open-uri'
-require 'uri'
-
 module HttpUtilities
   module Http
     module ProxySupport
@@ -13,7 +10,7 @@ module HttpUtilities
         proxy_credentials         =   options.fetch(:proxy_credentials, nil)
         reset_proxy               =   options.fetch(:reset_proxy, true)
 
-        if (reset_proxy)
+        if reset_proxy
           self.proxy              =   {}
           self.proxy[:host]       =   options.fetch(:proxy_host, nil)
           self.proxy[:port]       =   options.fetch(:proxy_port, nil)
