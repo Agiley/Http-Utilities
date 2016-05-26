@@ -46,7 +46,7 @@ module HttpUtilities
         adapter                             =   options.fetch(:adapter, Faraday.default_adapter)
         timeout                             =   options.fetch(:timeout, 60)
         open_timeout                        =   options.fetch(:open_timeout, 60)
-        content_type                        =   options.fetch(:content_type, nil)
+        request_headers                     =   options.fetch(:request_headers, {})
         response_adapters                   =   options.fetch(:response_adapters, [])
         
         request                             =   HttpUtilities::Http::Request.new
@@ -56,7 +56,10 @@ module HttpUtilities
     
         connection      =   Faraday.new(client_options) do |builder|
           builder.headers[:user_agent]      =   request.user_agent
-          builder.headers[:content_type]    =   content_type if content_type && !content_type.empty?
+          
+          request_headers.each do |key, value|
+            builder.headers[key]            =   value 
+          end if request_headers && !request_headers.empty?
           
           builder.options[:timeout]         =   timeout if timeout
           builder.options[:open_timeout]    =   open_timeout if open_timeout
