@@ -19,7 +19,7 @@ module HttpUtilities
       end
 
       def encode
-        if self.body
+        if self.body && self.body.is_a?(String)
           begin
             self.body = self.body.force_encoding('UTF-8').encode("UTF-8", :invalid => :replace, :undef => :replace, :replace => "")
           rescue Exception => e
