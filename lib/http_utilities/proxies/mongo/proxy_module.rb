@@ -80,9 +80,9 @@ module HttpUtilities
           def socks_proxy_credentials
             credentials     =   {}
     
-            if (!self.username.empty? && !self.password.empty?)
+            if (!self.username.nil? && !self.username.empty? && !self.password.nil? && !self.password.empty?)
               credentials   =   {user: self.username, password: self.password}
-            elsif (!self.username.empty? && self.password.empty?)
+            elsif (!self.username.nil? && !self.username.empty? && (self.password.nil? || self.password.empty?))
               credentials   =   {user: self.username}
             end
     
