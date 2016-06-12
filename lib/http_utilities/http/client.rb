@@ -5,7 +5,7 @@ module HttpUtilities
     class Client
       include HttpUtilities::Http::Logger
       
-      def get(url, arguments: {}, options: {}, retries: 3)
+      def get(url, arguments: {}, options: {}, raise_exceptions: false, retries: 3)
         response        =   nil
         request         =   build_request(options: options)
         
@@ -17,12 +17,13 @@ module HttpUtilities
           log(:error, "[HttpUtilities::Http::Client] - An error occurred while trying to fetch the response. Error Class: #{e.class.name}. Error Message: #{e.message}.")
           retries      -=   1
           retry if retries > 0
+          raise e if raise_exceptions && retries == 0
         end
 
         return response
       end
       
-      def post(url, data: nil, options: {}, retries: 3)
+      def post(url, data: nil, options: {}, raise_exceptions: false, retries: 3)
         response        =   nil
         request         =   build_request(options: options)
     
@@ -34,6 +35,7 @@ module HttpUtilities
           log(:error, "[HttpUtilities::Http::Client] - An error occurred while trying to fetch the response. Error Class: #{e.class.name}. Error Message: #{e.message}.")
           retries          -=   1
           retry if retries > 0
+          raise e if raise_exceptions && retries == 0
         end
 
         return response
