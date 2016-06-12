@@ -7,9 +7,9 @@ module HttpUtilities
       
       def get(url, arguments: {}, options: {}, raise_exceptions: false, retries: 3)
         response        =   nil
-        request         =   build_request(options: options)
         
         begin
+          request       =   build_request(options: options)
           response      =   request.interface.get(url, arguments)
           response      =   HttpUtilities::Http::Response.new(response, request, options)
     
@@ -25,9 +25,9 @@ module HttpUtilities
       
       def post(url, data: nil, options: {}, raise_exceptions: false, retries: 3)
         response        =   nil
-        request         =   build_request(options: options)
     
         begin
+          request       =   build_request(options: options)
           response      =   request.interface.post(url, data)
           response      =   HttpUtilities::Http::Response.new(response, request, options)
     
