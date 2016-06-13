@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 module HttpUtilities
-  VERSION = "1.2.6"
+  VERSION = "1.2.6.1"
   
   require File.join(File.dirname(__FILE__), 'http_utilities/railtie') if defined?(Rails)
 
