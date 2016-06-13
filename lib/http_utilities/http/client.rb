@@ -11,7 +11,7 @@ module HttpUtilities
         begin
           request       =   build_request(options: options)
           response      =   request.interface.get(url, arguments)
-          response      =   HttpUtilities::Http::Response.new(response, request, options)
+          response      =   HttpUtilities::Http::Response.new(response: response, request: request, options: options)
     
         rescue Faraday::TimeoutError, Net::ReadTimeout, Timeout::Error, StandardError => e
           log(:error, "[HttpUtilities::Http::Client] - An error occurred while trying to fetch the response. Error Class: #{e.class.name}. Error Message: #{e.message}.")
@@ -29,7 +29,7 @@ module HttpUtilities
         begin
           request       =   build_request(options: options)
           response      =   request.interface.post(url, data)
-          response      =   HttpUtilities::Http::Response.new(response, request, options)
+          response      =   HttpUtilities::Http::Response.new(response: response, request: request, options: options)
     
         rescue Faraday::TimeoutError, Net::ReadTimeout, Timeout::Error, StandardError => e
           log(:error, "[HttpUtilities::Http::Client] - An error occurred while trying to fetch the response. Error Class: #{e.class.name}. Error Message: #{e.message}.")
@@ -51,7 +51,7 @@ module HttpUtilities
         request_headers                     =   options.fetch(:request_headers, {})
         response_adapters                   =   options.fetch(:response_adapters, [])
         
-        request                             =   HttpUtilities::Http::Request.new
+        request                             =   HttpUtilities::Http::Request.new(options: options)
         request.set_proxy_options(options)
         
         proxy_options                       =   request.generate_proxy_options

@@ -5,8 +5,10 @@ module HttpUtilities
     module UserAgent
       
       def set_user_agent(device: :desktop)
-        user_agent        =   (USER_AGENTS[device] && USER_AGENTS[device].any?) ? USER_AGENTS[device].sample : nil
-        self.user_agent   =   user_agent if (user_agent && self.respond_to?(:user_agent=))
+        if USER_AGENTS.has_key?(device.to_sym)
+          user_agent        =   USER_AGENTS.fetch(device.to_sym, []).sample
+          self.user_agent   =   user_agent if (user_agent && self.respond_to?(:user_agent=))
+        end
       end
       
       USER_AGENTS = {

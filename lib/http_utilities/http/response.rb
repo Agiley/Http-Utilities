@@ -5,7 +5,7 @@ module HttpUtilities
 
       attr_accessor :body, :parsed_body, :page, :format, :request, :force_encoding
 
-      def initialize(response = nil, request = nil, options = {})
+      def initialize(response: nil, request: nil, options: {})
         self.body             =   (response && response.body) ? response.body : nil
         self.request          =   request
 
@@ -14,7 +14,7 @@ module HttpUtilities
         self.format           =   options.fetch(:format, nil)
         self.force_encoding   =   options.fetch(:force_encoding, true)
 
-        encode if (self.force_encoding)
+        encode if self.force_encoding
         parse_response
       end
 
@@ -33,21 +33,21 @@ module HttpUtilities
       end
       
       def as_html
-        self.parsed_body = (self.body && self.body != "") ? Nokogiri::HTML(self.body.to_s.force_encoding("utf-8"), nil, "utf-8") : nil
+        self.parsed_body = (self.body && !self.body.empty?) ? Nokogiri::HTML(self.body.to_s.force_encoding("utf-8"), nil, "utf-8") : nil
       end
 
       def as_xml
-        self.parsed_body = (self.body && self.body != "") ? Nokogiri::XML(self.body.to_s.force_encoding("utf-8"), nil, "utf-8") : nil
+        self.parsed_body = (self.body && !self.body.empty?) ? Nokogiri::XML(self.body.to_s.force_encoding("utf-8"), nil, "utf-8") : nil
       end
 
       def as_json
-        self.parsed_body = (self.body && self.body != "") ? self.body.to_s.force_encoding("utf-8").to_json : nil
+        self.parsed_body = (self.body && !self.body.empty?) ? self.body.to_s.force_encoding("utf-8").to_json : nil
       end
 
       def set_page(page)
-        self.page = page
+        self.page           =   page
 
-        if (self.page && self.page.parser)
+        if self.page && self.page.parser
           self.body         =   self.page.parser.content
           self.parsed_body  =   self.page.parser
         end
