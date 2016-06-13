@@ -22,9 +22,10 @@ module HttpUtilities
           self.agent                =   ::Mechanize.new
           self.agent.log            =   ::Logger.new(logger) if (verbose)
           
+          self.proxy                =   {}
           self.set_proxy_options(options)
           
-          if (self.proxy[:host] && self.proxy[:port])
+          if self.proxy[:host] && self.proxy[:port]
             log(:info, "[HttpUtilities::Http::Mechanize::Client] - Will use proxy #{self.proxy[:host]}:#{self.proxy[:port]} for Mechanize.")
             self.agent.set_proxy(self.proxy[:host], self.proxy[:port], self.proxy[:username], self.proxy[:password])
           end
@@ -33,7 +34,7 @@ module HttpUtilities
           (self.user_agent) ? self.agent.user_agent = self.user_agent : self.agent.user_agent_alias = 'Mac Safari'
           
           timeout                   =   options.fetch(:timeout, 300)
-          self.agent.open_timeout   =   self.agent.read_timeout = timeout if (timeout)
+          self.agent.open_timeout   =   self.agent.read_timeout = timeout if timeout
         end
         
         def reset_agent(options = {})
@@ -50,7 +51,7 @@ module HttpUtilities
           rescue Net::HTTPNotFound, ::Mechanize::ResponseCodeError => error
             log(:error, "[HttpUtilities::Http::Mechanize::Client] - Response Code Error occurred for url #{url}. Error class: #{error.class.name}. Error message: #{error.message}")
             
-            if (retries > 0)
+            if retries > 0
               reset_agent(options)
               retries -= 1
               retry
@@ -59,7 +60,7 @@ module HttpUtilities
           rescue Errno::ECONNREFUSED, Errno::ETIMEDOUT, Errno::ECONNRESET, Timeout::Error, Net::HTTPUnauthorized, Net::HTTPForbidden, StandardError => connection_error
             log(:error, "[HttpUtilities::Http::Mechanize::Client] - Error occurred. Error class: #{connection_error.class.name}. Message: #{connection_error.message}")
 
-            if (retries > 0)
+            if retries > 0
               reset_agent(options)
               retries -= 1
               retry
@@ -88,8 +89,8 @@ module HttpUtilities
           index       =   form_identifier.delete(:index) { |el| 0 }
           page        =   (url_or_page.is_a?(String)) ? get_page(url_or_page, options) : url_or_page
           
-          if (page)
-            if (form_identifier.empty?)
+          if page
+            if form_identifier.empty?
               form    =   page.forms[index]
             else
               forms   =   page.forms_with(form_identifier)
