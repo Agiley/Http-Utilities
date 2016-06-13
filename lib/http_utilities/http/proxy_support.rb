@@ -10,8 +10,13 @@ module HttpUtilities
         proxy_username            =   options.fetch(:proxy_username, nil)
         proxy_password            =   options.fetch(:proxy_password, nil)
         proxy_credentials         =   options.fetch(:proxy_credentials, nil)
+        proxy_type                =   options.fetch(:proxy_type, :all)
+        proxy_protocol            =   options.fetch(:proxy_protocol, :all)
         
         if use_proxy || specific_proxy
+          self.proxy[:protocol]   =   proxy_protocol
+          self.proxy[:type]       =   proxy_type
+          
           if specific_proxy && specific_proxy.is_a?(String)
             specific_proxy        =   specific_proxy.gsub(/^http(s)?:\/\//i, "")
             parts                 =   specific_proxy.split(":")
