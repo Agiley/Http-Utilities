@@ -11,9 +11,11 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/Agiley/http_utilities"
   s.summary = "Wrapper for Faraday with additional functionality"
   
+  s.add_dependency(%q<faraday>, [">= 0.9"])
+  s.add_dependency(%q<faraday_middleware>, [">= 0.10"])
   s.add_dependency(%q<nokogiri>, [">= 1.6"])
   s.add_dependency(%q<mechanize>, [">= 2.7"])
-  s.add_dependency(%q<net-ssh>, [">= 2.9"])
+  s.add_dependency(%q<net-ssh>, [">= 3.1"])
   
   s.add_development_dependency(%q<rails>, [">= 0"])
   s.add_development_dependency(%q<rspec>, [">= 0"])
