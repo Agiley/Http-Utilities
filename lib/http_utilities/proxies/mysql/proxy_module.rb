@@ -84,6 +84,16 @@ module HttpUtilities
           
             return credentials
           end
+          
+          def proxy_options_for_faraday
+            proxy_options             =   {}
+        
+            proxy_options[:uri]       =   ::Proxy.format_proxy_address(self.host, self.port, true)
+            proxy_options[:user]      =   self.username if self.username && !self.username.empty?
+            proxy_options[:password]  =   self.password if self.password && !self.password.empty?
+        
+            return proxy_options
+          end
         end
       
       end
