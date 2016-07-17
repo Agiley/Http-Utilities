@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 1.3.5") if s.respond_to? :required_rubygems_version=
   
   s.name = "http_utilities"
-  s.version = "1.2.6.3"
+  s.version = "1.2.6.4"
 
   s.authors = ["Sebastian Johnsson"]
   s.description = "Wrapper for Faraday with additional functionality"
@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.add_dependency(%q<faraday_middleware>, [">= 0.10"])
   s.add_dependency(%q<nokogiri>, [">= 1.6"])
   s.add_dependency(%q<mechanize>, [">= 2.7"])
-  s.add_dependency(%q<net-ssh>, [">= 3.1"])
+  s.add_dependency(%q<net-ssh>, [">= 2.0"])
   
   s.add_development_dependency(%q<rails>, [">= 0"])
   s.add_development_dependency(%q<rspec>, [">= 0"])
