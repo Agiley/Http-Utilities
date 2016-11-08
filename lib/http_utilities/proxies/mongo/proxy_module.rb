@@ -31,10 +31,14 @@ module HttpUtilities
             return proxies
           end
         
-          def get_random_proxy(protocol: :all, proxy_type: :all, maximum_failed_attempts: nil, retries: 3)
+          def get_valid_proxies(protocol: :all, proxy_type: :all, maximum_failed_attempts: nil, retries: 3)
             proxies     =   get_proxies_for_protocol_and_proxy_type(protocol, proxy_type)
             proxies     =   proxies.where(valid_proxy: true)
             proxies     =   proxies.where(:failed_attempts.lte => maximum_failed_attempts) if maximum_failed_attempts
+          end
+        
+          def get_random_proxy(protocol: :all, proxy_type: :all, maximum_failed_attempts: nil, retries: 3)
+            proxies     =   get_valid_proxies(protocol: protocol, proxy_type: proxy_type, maximum_failed_attempts: maximum_failed_attempts)
             proxy       =   nil
             
             begin

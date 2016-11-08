@@ -20,10 +20,16 @@ module HttpUtilities
             return proxies
           end
         
-          def get_random_proxy(protocol: :all, proxy_type: :all, maximum_failed_attempts: nil)
+          def get_valid_proxies(protocol: :all, proxy_type: :all, maximum_failed_attempts: nil)
             proxies     =   get_proxies_for_protocol_and_proxy_type(protocol, proxy_type)
             proxies     =   proxies.where(["valid_proxy = ? AND last_checked_at IS NOT NULL", true])
             proxies     =   proxies.where(["failed_attempts <= ?", maximum_failed_attempts]) if maximum_failed_attempts
+
+            return proxies
+          end
+        
+          def get_random_proxy(protocol: :all, proxy_type: :all, maximum_failed_attempts: nil)
+            proxies     =   get_valid_proxies(protocol: protocol, proxy_type: proxy_type, maximum_failed_attempts: maximum_failed_attempts)
           
             order_clause = case ActiveRecord::Base.connection.class.name
               when "ActiveRecord::ConnectionAdapters::MysqlAdapter", "ActiveRecord::ConnectionAdapters::Mysql2Adapter"
