@@ -3,9 +3,10 @@ module HttpUtilities
     class Response
       include HttpUtilities::Http::Logger
 
-      attr_accessor :body, :parsed_body, :page, :format, :request, :force_encoding
+      attr_accessor :status, :body, :parsed_body, :page, :format, :request, :force_encoding
 
       def initialize(response: nil, request: nil, options: {})
+        self.status           =   (response && response.status) ? response.status : nil
         self.body             =   (response && response.body) ? response.body : nil
         self.request          =   request
 
