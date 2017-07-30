@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 1.3.5") if s.respond_to? :required_rubygems_version=
   
   s.name = "http_utilities"
-  s.version = "1.2.7"
+  s.version = "1.3.0"
 
   s.authors = ["Sebastian Johnsson"]
   s.description = "Wrapper for Faraday with additional functionality"
@@ -11,17 +11,17 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/Agiley/http_utilities"
   s.summary = "Wrapper for Faraday with additional functionality"
   
-  s.add_dependency(%q<faraday>, [">= 0.9"])
-  s.add_dependency(%q<faraday_middleware>, [">= 0.10"])
-  s.add_dependency(%q<nokogiri>, [">= 1.6"])
-  s.add_dependency(%q<mechanize>, [">= 2.7"])
-  s.add_dependency(%q<net-ssh>, [">= 2.0"])
+  s.add_dependency "faraday",                         ">= 0.12.2"
+  s.add_dependency "faraday_middleware",              ">= 0.12.0"
+  s.add_dependency "nokogiri",                        ">= 1.8.0"
+  s.add_dependency "mechanize",                       ">= 2.7.5"
+  s.add_dependency "net-ssh",                         ">= 4.1.0"
   
-  s.add_development_dependency(%q<rails>, [">= 0"])
-  s.add_development_dependency(%q<rspec>, [">= 0"])
-  s.add_development_dependency(%q<sqlite3>, [">= 0"])
-  s.add_development_dependency(%q<mysql2>, [">= 0"])
-  s.add_development_dependency(%q<activerecord-import>, [">= 0"])
+  s.add_development_dependency "rails",               ">= 0"
+  s.add_development_dependency "rspec",               ">= 0"
+  s.add_development_dependency "sqlite3",             ">= 0"
+  s.add_development_dependency "mysql2",              ">= 0"
+  s.add_development_dependency "activerecord-import", ">= 0"
   
   # = MANIFEST =
  s.files = %w[

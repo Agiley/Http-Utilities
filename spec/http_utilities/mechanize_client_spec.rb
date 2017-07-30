@@ -10,10 +10,6 @@ describe HttpUtilities::Http::Mechanize::Client do
     it "should respond to a user agent module method" do
       @client.should respond_to(:user_agent)
     end
-
-    it "should respond to a request module method" do
-      @client.should respond_to(:generate_request_url)
-    end
   end
 
   describe "when initialized" do

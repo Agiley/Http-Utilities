@@ -1,3 +1,3 @@
 class Proxy < ActiveRecord::Base
-  include HttpUtilities::Proxies::ProxyModule  
+  include HttpUtilities::Proxies::Mysql::ProxyModule  
 end
