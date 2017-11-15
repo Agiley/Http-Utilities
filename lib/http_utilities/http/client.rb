@@ -56,7 +56,8 @@ module HttpUtilities
         request.set_proxy_options(options)
         
         proxy_options                       =   request.generate_proxy_options
-    
+        client_options                      =   client_options.merge(proxy: proxy_options) unless proxy_options.empty?
+        
         connection      =   Faraday.new(client_options) do |builder|
           builder.headers[:user_agent]      =   request.user_agent
 
@@ -73,7 +74,7 @@ module HttpUtilities
             builder.send(:response, response_adapter)
           end if response_adapters && response_adapters.any?
 
-          builder.proxy     proxy_options unless proxy_options.empty?
+          #builder.proxy     proxy_options unless proxy_options.empty?
           
           builder.adapter   adapter
         end
@@ -86,4 +87,3 @@ module HttpUtilities
     end
   end
 end
-
