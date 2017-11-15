@@ -37,7 +37,6 @@ Gem::Specification.new do |s|
  lib/generators/helpers/orm_helpers.rb
  lib/generators/http_utilities/http_utilities_generator.rb
  lib/generators/templates/http_utilities.rb
- lib/generators/templates/user_agents.yml
  lib/http_utilities.rb
  lib/http_utilities/http/client.rb
  lib/http_utilities/http/logger.rb
