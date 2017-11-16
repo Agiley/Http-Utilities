@@ -11,8 +11,11 @@ module HttpUtilities
           if proxy_opts.is_a?(String)
             set_from_string(proxy_opts)
             
-          elsif proxy_opts.is_a?(Hash)
+          elsif proxy_opts.is_a?(Hash) && !proxy_opts.empty?
             set_from_hash(proxy_opts)
+          
+          elsif proxy_opts.is_a?(Array) && proxy_opts.any?
+            set_from_array(proxy_opts)
             
           elsif proxy_model_defined? && proxy_opts.is_a?(::Proxy)
             set_from_object(proxy_opts)
@@ -52,6 +55,18 @@ module HttpUtilities
             
             set_credentials(username, password)
           end
+        end
+      end
+      
+      def set_from_array(proxy_opts)
+        item                          =   proxy_opts.sample
+        
+        if item.is_a?(String)
+          set_from_string(item)
+        elsif item.is_a?(Hash) && !item.empty?
+          set_from_hash(item)
+        elsif proxy_model_defined? && item.is_a?(::Proxy)
+          set_from_object(item)
         end
       end
       
