@@ -13,7 +13,7 @@ module HttpUtilities
           response      =   request.interface.get(url, arguments)
           response      =   HttpUtilities::Http::Response.new(response: response, request: request, options: options)
     
-        rescue Faraday::TimeoutError, Net::ReadTimeout, Timeout::Error, StandardError => e
+        rescue Faraday::TimeoutError, Net::ReadTimeout, Timeout::Error => e
           log(:error, "[HttpUtilities::Http::Client] - An error occurred while trying to fetch the response. Error Class: #{e.class.name}. Error Message: #{e.message}.")
           retries      -=   1
           retry if retries > 0
@@ -31,7 +31,7 @@ module HttpUtilities
           response      =   request.interface.post(url, data)
           response      =   HttpUtilities::Http::Response.new(response: response, request: request, options: options)
     
-        rescue Faraday::TimeoutError, Net::ReadTimeout, Timeout::Error, StandardError => e
+        rescue Faraday::TimeoutError, Net::ReadTimeout, Timeout::Error => e
           log(:error, "[HttpUtilities::Http::Client] - An error occurred while trying to fetch the response. Error Class: #{e.class.name}. Error Message: #{e.message}.")
           retries          -=   1
           retry if retries > 0
