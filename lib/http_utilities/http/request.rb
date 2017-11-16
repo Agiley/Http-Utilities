@@ -7,7 +7,7 @@ module HttpUtilities
       
       attr_accessor :interface, :proxy, :user_agent
       
-      def initialize(interface: nil, proxy: {}, options: {})
+      def initialize(interface: nil, proxy: nil, options: {})
         self.interface  =   interface
         self.proxy      =   proxy
         

@@ -14,8 +14,7 @@ module HttpUtilities
         proxy_protocol            =   options.fetch(:proxy_protocol, :all)
         
         if use_proxy || specific_proxy
-          self.proxy[:protocol]   =   proxy_protocol
-          self.proxy[:type]       =   proxy_type
+          self.proxy            ||=   {}
           
           if specific_proxy && specific_proxy.is_a?(String)
             specific_proxy        =   specific_proxy.gsub(/^http(s)?:\/\//i, "")
@@ -34,7 +33,7 @@ module HttpUtilities
             if specific_proxy && specific_proxy.is_a?(::Proxy)
               proxy_object        =   specific_proxy
             else
-              proxy_object        =   ::Proxy.get_random_proxy(protocol: self.proxy[:protocol], proxy_type: self.proxy[:type])
+              proxy_object        =   ::Proxy.get_random_proxy(protocol: proxy_protocol, proxy_type: proxy_type)
             end
             
             #log(:info, "[HttpUtilities::Http::ProxySupport] - Randomized Proxy object: #{proxy_object.inspect}")
@@ -42,13 +41,13 @@ module HttpUtilities
             if proxy_object
               self.proxy[:host]   =   proxy_object.host
               self.proxy[:port]   =   proxy_object.port
-              proxy_username      =   proxy_object.username.present? ? proxy_object.username : nil
-              proxy_password      =   proxy_object.password.present? ? proxy_object.password : nil
+              proxy_username      =   !proxy_object.username.to_s.empty? ? proxy_object.username : nil
+              proxy_password      =   !proxy_object.password.to_s.empty? ? proxy_object.password : nil
             end
           end
+          
+          set_proxy_credentials(proxy_username, proxy_password, proxy_credentials)
         end
-
-        set_proxy_credentials(proxy_username, proxy_password, proxy_credentials)
       end
 
       def set_proxy_credentials(proxy_username, proxy_password, proxy_credentials)
@@ -73,18 +72,20 @@ module HttpUtilities
       end
       
       def proxy_model_defined?
-        defined = Module.const_get("Proxy").is_a?(Class) rescue false
-        defined = (defined && ::Proxy.respond_to?(:get_random_proxy))
+        defined                     =   Module.const_get("Proxy").is_a?(Class) rescue false
+        defined                     =   (defined && ::Proxy.respond_to?(:get_random_proxy))
         
         return defined
       end
       
       def generate_proxy_options
-        proxy_options             =   {}
+        proxy_options               =   {}
         
-        proxy_options[:uri]       =   "http://#{self.proxy[:host]}:#{self.proxy[:port]}"
-        proxy_options[:user]      =   self.proxy[:username] if self.proxy[:username] && !self.proxy[:username].empty?
-        proxy_options[:password]  =   self.proxy[:password] if self.proxy[:password] && !self.proxy[:password].empty?
+        if !self.proxy[:host].to_s.empty? && !self.proxy[:port].to_s.empty?
+          proxy_options[:uri]       =   "http://#{self.proxy[:host]}:#{self.proxy[:port]}"
+          proxy_options[:user]      =   self.proxy[:username] if !self.proxy[:username].to_s.empty?
+          proxy_options[:password]  =   self.proxy[:password] if !self.proxy[:password].to_s.empty?
+        end
         
         return proxy_options
       end

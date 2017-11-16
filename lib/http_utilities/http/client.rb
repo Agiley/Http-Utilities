@@ -56,7 +56,7 @@ module HttpUtilities
         request.set_proxy_options(options)
         
         proxy_options                       =   request.generate_proxy_options
-        client_options                      =   client_options.merge(proxy: proxy_options) unless proxy_options.empty?
+        client_options                      =   client_options.merge(proxy: proxy_options) if proxy_options && !proxy_options.empty?
         
         connection      =   Faraday.new(client_options) do |builder|
           builder.headers[:user_agent]      =   request.user_agent
