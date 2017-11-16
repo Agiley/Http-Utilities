@@ -5,7 +5,7 @@ require "faraday_middleware"
 require "mechanize"
 
 module HttpUtilities
-  VERSION = "1.3.3"
+  VERSION = "1.3.4"
   
   require File.join(File.dirname(__FILE__), 'http_utilities/railtie') if defined?(Rails)
 

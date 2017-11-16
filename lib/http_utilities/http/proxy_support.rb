@@ -81,7 +81,7 @@ module HttpUtilities
       def generate_proxy_options
         proxy_options               =   {}
         
-        if !self.proxy[:host].to_s.empty? && !self.proxy[:port].to_s.empty?
+        if self.proxy && !self.proxy[:host].to_s.empty? && !self.proxy[:port].to_s.empty?
           proxy_options[:uri]       =   "http://#{self.proxy[:host]}:#{self.proxy[:port]}"
           proxy_options[:user]      =   self.proxy[:username] if !self.proxy[:username].to_s.empty?
           proxy_options[:password]  =   self.proxy[:password] if !self.proxy[:password].to_s.empty?
