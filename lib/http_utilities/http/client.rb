@@ -9,11 +9,11 @@ module HttpUtilities
         Faraday::Error
       ]
       
-      def get(url, arguments: {}, options: {}, raise_exceptions: false, retries: 3)
+      def get(url, arguments: {}, options: {}, client_options: {}, raise_exceptions: false, retries: 3)
         response        =   nil
         
         begin
-          request       =   build_request(options: options)
+          request       =   build_request(options: options, client_options: client_options)
           response      =   request.interface.get(url, arguments)
           response      =   HttpUtilities::Http::Response.new(response: response, request: request, options: options)
     
@@ -27,11 +27,11 @@ module HttpUtilities
         return response
       end
       
-      def post(url, data: nil, options: {}, raise_exceptions: false, retries: 3)
+      def post(url, data: nil, options: {}, client_options: {}, raise_exceptions: false, retries: 3)
         response        =   nil
     
         begin
-          request       =   build_request(options: options)
+          request       =   build_request(options: options, client_options: client_options)
           response      =   request.interface.post(url, data)
           response      =   HttpUtilities::Http::Response.new(response: response, request: request, options: options)
     
