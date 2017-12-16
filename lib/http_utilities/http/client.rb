@@ -28,11 +28,19 @@ module HttpUtilities
       end
       
       def post(url, data: nil, options: {}, client_options: {}, raise_exceptions: false, retries: 3)
+        update(url, action: :post, data: data, options: options, client_options: client_options, raise_exceptions: raise_exceptions, retries: retries)
+      end
+      
+      def patch(url, data: nil, options: {}, client_options: {}, raise_exceptions: false, retries: 3)
+        update(url, action: :patch, data: data, options: options, client_options: client_options, raise_exceptions: raise_exceptions, retries: retries)
+      end
+      
+      def update(url, action: :post, data: nil, options: {}, client_options: {}, raise_exceptions: false, retries: 3)
         response        =   nil
     
         begin
           request       =   build_request(options: options, client_options: client_options)
-          response      =   request.interface.post(url, data)
+          response      =   request.interface.send(action, url, data)
           response      =   HttpUtilities::Http::Response.new(response: response, request: request, options: options)
     
         rescue *EXCEPTIONS => e
