@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 1.3.5") if s.respond_to? :required_rubygems_version=
   
   s.name = "http_utilities"
-  s.version = "1.4.0"
+  s.version = "1.4.1"
 
   s.authors = ["Sebastian Johnsson"]
   s.description = "Wrapper for Faraday with additional functionality"
@@ -49,8 +49,8 @@ Gem::Specification.new do |s|
  lib/http_utilities/jobs/resque/proxies/check_proxy_job.rb
  lib/http_utilities/jobs/sidekiq/proxies/check_proxies_job.rb
  lib/http_utilities/jobs/sidekiq/proxies/check_proxy_job.rb
- lib/http_utilities/proxies/mongo/proxy_module.rb
- lib/http_utilities/proxies/mysql/proxy_module.rb
+ lib/http_utilities/proxies/nosql/proxy_module.rb
+ lib/http_utilities/proxies/sql/proxy_module.rb
  lib/http_utilities/proxies/proxy_checker.rb
  lib/http_utilities/proxies/proxy_seeder.rb
  lib/http_utilities/railtie.rb

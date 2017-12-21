@@ -5,7 +5,7 @@ require "faraday_middleware"
 require "mechanize"
 
 module HttpUtilities
-  VERSION = "1.4.0"
+  VERSION = "1.4.1"
   
   require File.join(File.dirname(__FILE__), 'http_utilities/railtie') if defined?(Rails)
 
@@ -21,12 +21,12 @@ module HttpUtilities
   require File.join(File.dirname(__FILE__), 'http_utilities/http/mechanize/client')
 
   if defined?(ActiveRecord)
-    require File.join(File.dirname(__FILE__), 'http_utilities/proxies/mysql/proxy_module')
+    require File.join(File.dirname(__FILE__), 'http_utilities/proxies/sql/proxy_module')
     require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_seeder')
   end
   
   if defined?(Mongoid)
-    require File.join(File.dirname(__FILE__), 'http_utilities/proxies/mongo/proxy_module')
+    require File.join(File.dirname(__FILE__), 'http_utilities/proxies/nosql/proxy_module')
   end
   
   require File.join(File.dirname(__FILE__), 'http_utilities/proxies/proxy_checker')
