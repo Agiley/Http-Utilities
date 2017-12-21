@@ -50,9 +50,9 @@ Gem::Specification.new do |s|
  lib/http_utilities/jobs/sidekiq/proxies/check_proxies_job.rb
  lib/http_utilities/jobs/sidekiq/proxies/check_proxy_job.rb
  lib/http_utilities/proxies/nosql/proxy_module.rb
- lib/http_utilities/proxies/sql/proxy_module.rb
  lib/http_utilities/proxies/proxy_checker.rb
  lib/http_utilities/proxies/proxy_seeder.rb
+ lib/http_utilities/proxies/sql/proxy_module.rb
  lib/http_utilities/railtie.rb
  lib/tasks/http_utilities_tasks.rake
  spec/database.yml.example
