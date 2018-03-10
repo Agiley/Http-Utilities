@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 1.3.5") if s.respond_to? :required_rubygems_version=
   
   s.name = "http_utilities"
-  s.version = "1.4.1"
+  s.version = "1.4.2"
 
   s.authors = ["Sebastian Johnsson"]
   s.description = "Wrapper for Faraday with additional functionality"
@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/Agiley/http_utilities"
   s.summary = "Wrapper for Faraday with additional functionality"
   
-  s.add_dependency "faraday",                         "~> 0.13.1"
-  s.add_dependency "faraday_middleware",              "~> 0.12.2"
+  s.add_dependency "faraday",                         "~> 0.14"
+  s.add_dependency "faraday_middleware",              "~> 0.12"
   s.add_dependency "nokogiri",                        "~> 1.8"
   s.add_dependency "mechanize",                       "~> 2.7"
   s.add_dependency "net-ssh",                         "~> 4.2"
