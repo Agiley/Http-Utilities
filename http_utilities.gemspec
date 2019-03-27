@@ -11,17 +11,18 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/Agiley/http_utilities"
   s.summary = "Wrapper for Faraday with additional functionality"
   
-  s.add_dependency "faraday",                         "~> 0.14"
-  s.add_dependency "faraday_middleware",              "~> 0.12"
-  s.add_dependency "nokogiri",                        "~> 1.8"
-  s.add_dependency "mechanize",                       "~> 2.7"
-  s.add_dependency "net-ssh",                         "~> 4.2"
+  s.add_dependency "faraday",                         ">= 0.15"
+  s.add_dependency "faraday_middleware",              ">= 0.13"
   
-  s.add_development_dependency "rails",               ">= 0"
-  s.add_development_dependency "rspec",               ">= 0"
-  s.add_development_dependency "sqlite3",             ">= 0"
-  s.add_development_dependency "mysql2",              ">= 0"
-  s.add_development_dependency "activerecord-import", ">= 0"
+  s.add_dependency "nokogiri",                        ">= 1.10"
+  s.add_dependency "mechanize",                       ">= 2.7"
+  s.add_dependency "net-ssh",                         ">= 5.2"
+  
+  s.add_development_dependency "rails",               ">= 3.2"
+  s.add_development_dependency "rspec",               ">= 3.8"
+  s.add_development_dependency "sqlite3",             "~> 1.3.6"
+  s.add_development_dependency "mysql2",              ">= 0.5"
+  s.add_development_dependency "activerecord-import", ">= 1.0"
   
   # = MANIFEST =
  s.files = %w[
@@ -68,4 +69,4 @@ Gem::Specification.new do |s|
  # = MANIFEST =
    
    s.test_files = s.files.select { |path| path =~ %r{^spec/*/.+\.rb} }
-end 
+end
